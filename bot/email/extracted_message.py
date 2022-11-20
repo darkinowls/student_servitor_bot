@@ -1,7 +1,7 @@
 import re
 
 
-class Message:
+class ExtractedMessage:
     subject: str
     sender_email: str
     sender_name: str

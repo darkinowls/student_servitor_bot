@@ -1,7 +1,11 @@
+from collections.abc import Callable
+
 from pyrogram import Client
 from pyrogram.handlers import MessageHandler
 from pyrogram.handlers.handler import Handler
 from pyrogram.types import Message
+
+from bot.exceptions.telegram_bot_exception import TelegramBotException
 
 
 class SimpleClient(Client):
@@ -19,4 +23,9 @@ class SimpleClient(Client):
                                             message_id=incoming_message.reply_to_message_id,
                                             text=text)
 
-
+    async def run_wrapped_function(self, message: Message, func: Callable):
+        try:
+            await func(self, message)
+        except TelegramBotException as e:
+            print(e)
+            await self.send_text_message(message, text=e.__str__())

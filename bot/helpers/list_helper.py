@@ -8,6 +8,7 @@ from bot.helpers.command_helper import get_parameters_list
 
 SCROLL_EMOJI = '\U0001F4DC'
 
+
 RECORD_REGEX = r'(\d{1,3})?\.?\s*([a-zA-ZА-ЯҐЄІЇа-яґєії]{3,20}.{,20})'
 END_LINE_BEHIND_REGEX = r'(?<=\n)'
 END_AHEAD_REGEX = r'(?=\n|$)'
