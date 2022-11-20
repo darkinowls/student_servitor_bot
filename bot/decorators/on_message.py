@@ -10,5 +10,3 @@ def on_message(self=SimpleClient, filters=None, group: int = 0) -> Callable:
 
     return decorator
 
-
-

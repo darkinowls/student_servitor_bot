@@ -4,6 +4,7 @@ from bot import CONNECTION_STRING
 from pymongo.database import Database
 
 
+
 def get_database() -> Database:
     return MongoClient(CONNECTION_STRING).get_database("student_bot")
 
