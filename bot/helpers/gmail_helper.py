@@ -1,6 +1,11 @@
 import re
-from schedule import Job
-from bot.email import GmailClient
+
+from apscheduler.job import Job
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+
+from bot import database
+from bot.email.gmail_client import GmailClient
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.list_helper import get_parameters_list
 
@@ -32,3 +37,20 @@ def send_new_email_messages(self, *args: int | GmailClient):
     texts: list[str] = gmail_client.get_new_messages()
     for text in texts:
         self.send_message(chat_id=chat_id, text=text)
+
+
+def add_previous_gmail_sessions_to_schedule(scheduler: AsyncIOScheduler):
+    for session in database.get_all_gmail_sessions():
+        chat_id = int(session.get('chat_id'))
+        app_password = session.get('app_password')
+        gmail_address = session.get('gmail_address')
+        module_is_on = bool(session.get('module_is_on'))
+        gmail_client: GmailClient = GmailClient(gmail_address, app_password)
+        job: Job = scheduler.add_job(send_new_email_messages,
+                                            "interval",
+                                            seconds=10,
+                                            id=chat_id.__str__(),
+                                            args=[chat_id, gmail_client])
+        if not module_is_on:
+            job.pause()
+    return scheduler

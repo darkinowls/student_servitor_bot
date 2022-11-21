@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from typing import Coroutine
 
 from pyrogram import Client
 from pyrogram.handlers import MessageHandler

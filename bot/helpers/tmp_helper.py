@@ -2,13 +2,13 @@ import os
 
 
 def get_or_create_tmp_json_file(filename: str, chat_id: int, text: str = None) -> str:
-    filepath = _generate_tmp_filepath(chat_id, filename)
+    filepath = generate_tmp_filepath(filename, chat_id)
     if not os.path.isfile(filepath):
         _create_file(filepath, text)
     return filepath
 
 
-def _generate_tmp_filepath(chat_id, filename) -> str:
+def generate_tmp_filepath(filename, chat_id) -> str:
     os.makedirs(".tmp", exist_ok=True)
     return ".tmp/" + filename + "_" + chat_id.__str__() + ".json"
 

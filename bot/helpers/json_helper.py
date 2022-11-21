@@ -10,10 +10,17 @@ def check_document_is_json(document: Document) -> bool:
     return True
 
 
-def create_json_from_binary_io(stream: BinaryIO) -> dict:
-    chars: str = stream.read().decode()
+# def create_json_from_binary_io(stream: BinaryIO) -> dict:
+#     chars: str = stream.read().decode()
+#     try:
+#         json_dict = json.loads(chars)
+#     except Exception:
+#         raise TelegramBotException("Json has errors")
+#     return json_dict
+
+def load_json_file(filepath) -> dict:
     try:
-        json_dict = json.loads(chars)
-    except Exception:
-        raise TelegramBotException("Json has errors")
-    return json_dict
+        with open(filepath) as f:
+            return json.load(f)
+    except ValueError:
+        TelegramBotException('JSON syntax error')

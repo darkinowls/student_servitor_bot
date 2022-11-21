@@ -18,14 +18,14 @@ def get_schedule_by_chat_id(chat_id: int) -> list:
 
 
 def upsert_schedule(chat_id: int, schedule: list, module_is_on: bool = True) -> int:
-    return get_schedule_sessions().update_one({CHAT_ID: chat_id},
+    a = get_schedule_sessions().update_one({CHAT_ID: chat_id},
                                               {"$set": {
                                                   SCHEDULE: schedule,
                                                   MODULE_IS_ON: module_is_on
                                               }
                                               },
-                                              upsert=True).matched_count
-
+                                              upsert=True)
+    return a
 
 def get_gmail_address_and_app_password_by_chat_id(chat_id: int) -> tuple[str, str] | None:
     result = get_gmail_sessions().find_one({CHAT_ID: chat_id})
@@ -51,3 +51,7 @@ def upsert_gmail(chat_id: int, gmail_address: str, app_password: str, module_is_
 
 def get_all_gmail_sessions() -> Cursor:
     return get_gmail_sessions().find()
+
+
+def get_all_schedule_sessions() -> Cursor:
+    return get_schedule_sessions().find()

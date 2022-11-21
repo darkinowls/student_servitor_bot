@@ -26,7 +26,7 @@ class ExtractedMessage:
         result_str += "Attachments: " + len(self.attachments).__str__() + "\n" if len(
             self.attachments) != 0 else ""
         result_str += "Text: " + self.text + "\n" if self.text != "" else ""
-        result_str += "Reference: https://mail.google.com/mail/u/1/\n"
+        result_str += "Reference: https://mail.google.com/mail/u/0/\n"
 
         return result_str
 

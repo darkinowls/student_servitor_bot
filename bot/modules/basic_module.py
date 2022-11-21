@@ -9,6 +9,7 @@ from bot.decorators.on_message import on_message
 from bot.decorators.on_typed_message import on_typed_message
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.command_helper import get_parameter
+from bot.helpers.schedule_helper import get_current_week_number
 from bot.helpers.tmp_helper import get_or_create_tmp_json_file
 from bot.simple_client import SimpleClient
 
@@ -43,3 +44,7 @@ class BasicBot(SimpleClient):
         @on_typed_message(self, filters.command("copy"))
         async def copy_message_text(_, message: Message):
             await self.send_text_message(message, text=get_parameter(message.text))
+
+        @on_typed_message(self, filters.command("week"))
+        async def print_week_num(_, message: Message):
+            await self.send_text_message(message, text=f"Today is ${get_current_week_number()} week")
