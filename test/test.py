@@ -3,14 +3,13 @@ import unittest
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-from bot.database._connection import get_gmail_sessions
-from bot.email import get_new_messages
+from bot.database.__connection import __get_gmail_sessions_collection
 
 
 class MyTestCase(unittest.TestCase):
 
     def test_database(self):
-        gmail_s: Collection = get_gmail_sessions()
+        gmail_s: Collection = __get_gmail_sessions_collection()
         doc = gmail_s.find_one({"chat_id": 16476882666})
         self.assertEqual("abobus@gmail.com", doc["email_address"])
 

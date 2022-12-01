@@ -14,7 +14,7 @@ class SimpleClient(Client):
     def __init__(self, bot_name, api_id, api_hash, bot_token):
         super().__init__(name=bot_name, api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
-    async def send_text_message(self, incoming_message: Message, text: str):
+    async def send_reply_message(self, incoming_message: Message, text: str):
         return await self.send_message(chat_id=incoming_message.chat.id,
                                        reply_to_message_id=incoming_message.id,
                                        text=text)
@@ -29,4 +29,4 @@ class SimpleClient(Client):
             await func(self, message)
         except TelegramBotException as e:
             print(e)
-            await self.send_text_message(message, text=e.__str__())
+            await self.send_reply_message(message, text=e.__str__())

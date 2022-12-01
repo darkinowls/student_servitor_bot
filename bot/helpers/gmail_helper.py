@@ -1,11 +1,5 @@
 import re
 
-from apscheduler.job import Job
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
-
-from bot import database
-from bot.email.gmail_client import GmailClient
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.list_helper import get_parameters_list
 
@@ -24,33 +18,3 @@ def get_gmail_address_and_app_password_from_parameters(text: str) -> tuple[str, 
     if len(password) != 16:
         raise TelegramBotException("The App password must have exactly 16 chars")
     return gmail_address, password
-
-
-def check_gmail_job(gmail_job: Job):
-    if gmail_job is None:
-        raise TelegramBotException("No gmail connection in this chat")
-
-
-def send_new_email_messages(self, *args: int | GmailClient):
-    chat_id = args[0]
-    gmail_client: GmailClient = args[1]
-    texts: list[str] = gmail_client.get_new_messages()
-    for text in texts:
-        self.send_message(chat_id=chat_id, text=text)
-
-
-def add_previous_gmail_sessions_to_schedule(scheduler: AsyncIOScheduler):
-    for session in database.get_all_gmail_sessions():
-        chat_id = int(session.get('chat_id'))
-        app_password = session.get('app_password')
-        gmail_address = session.get('gmail_address')
-        module_is_on = bool(session.get('module_is_on'))
-        gmail_client: GmailClient = GmailClient(gmail_address, app_password)
-        job: Job = scheduler.add_job(send_new_email_messages,
-                                            "interval",
-                                            seconds=10,
-                                            id=chat_id.__str__(),
-                                            args=[chat_id, gmail_client])
-        if not module_is_on:
-            job.pause()
-    return scheduler

@@ -1,13 +1,13 @@
-from bot.modules.gmail_module import GmailBot
-from bot.modules.list_module import ListBot
-from bot.modules.schedule_module import ScheduleBot
+from bot.modules.gmail_module import GmailModule
+from bot.modules.list_module import ListModule
+from bot.modules.schedule_module import ScheduleModule
 from bot import API_ID, BOT_NAME, API_HASH, BOT_TOKEN
 
 
 class TelegramBot(
-    GmailBot,
-    ListBot,
-    ScheduleBot
+    GmailModule,
+    ListModule,
+    ScheduleModule
 ):
     pass
     # def __init__(bot_name, api_id, api_hash, bot_token ):
