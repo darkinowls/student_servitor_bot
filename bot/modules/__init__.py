@@ -1,12 +1,12 @@
 from bot.modules.gmail_module import GmailModule
-from bot.modules.list_module import ListModule
+from bot.modules.queue_module import QueueModule
 from bot.modules.schedule_module import ScheduleModule
 from bot import API_ID, BOT_NAME, API_HASH, BOT_TOKEN
 
 
 class TelegramBot(
     GmailModule,
-    ListModule,
+    QueueModule,
     ScheduleModule
 ):
     pass

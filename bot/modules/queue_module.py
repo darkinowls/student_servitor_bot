@@ -7,14 +7,14 @@ from bot.decorators.on_typed_message import on_typed_message
 from bot.modules.basic_bot import BasicBot
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.command_helper import get_single_text_parameter
-from bot.helpers.list_helper import Message, \
+from bot.helpers.queue_helper import Message, \
     get_order_records_dict_and_header, \
-    create_queue_text, SCROLL_EMOJI, is_reply_to_my_list_message, get_index_list_from_parameters, \
+    create_queue_text, SCROLL_EMOJI, is_reply_to_my_queue_message, get_index_list_from_parameters, \
     get_two_indexes_from_parameters, \
     swap_records_by_indexes, remove_records_by_indexes, create_record
 
 
-class ListModule(BasicBot):
+class QueueModule(BasicBot):
 
     async def edit_student_queue(self, record_dict: OrderedDict, header: str, original_message: Message):
         queue_text: str = create_queue_text(record_dict, header)
@@ -23,7 +23,7 @@ class ListModule(BasicBot):
 
     def __init__(self, bot_name, api_id, api_hash, bot_token):
         super().__init__(bot_name, api_id, api_hash, bot_token)
-        reply_to_my_list_message_filter: Filter = filters.create(is_reply_to_my_list_message)
+        reply_to_my_list_message_filter: Filter = filters.create(is_reply_to_my_queue_message)
 
         @on_typed_message(self, filters.command("rm") & reply_to_my_list_message_filter)
         async def remove_by_indexes(_, message: Message):
@@ -39,20 +39,20 @@ class ListModule(BasicBot):
             record_dict: OrderedDict = swap_records_by_indexes(first, second, record_dict)
             await self.edit_student_queue(record_dict, header, original_message=message)
 
-        @on_typed_message(self, filters.command("head") & reply_to_my_list_message_filter)
+        @on_typed_message(self, filters.command("header") & reply_to_my_list_message_filter)
         async def set_header(_, message: Message):
             new_header: str = SCROLL_EMOJI + ' ' + get_single_text_parameter(message.text)
             record_dict, _ = get_order_records_dict_and_header(message.text)
             await self.edit_student_queue(record_dict, header=new_header, original_message=message)
 
-        @on_typed_message(self, filters.command("list"))
-        async def make_list(_, message: Message):
+        @on_typed_message(self, filters.command("queue"))
+        async def create_queue(_, message: Message):
             header: str = get_single_text_parameter(message.text, should_exist=False)
             header = SCROLL_EMOJI + ' ' + header
             await self.send_reply_message(message, text=header)
 
         @on_typed_message(self, reply_to_my_list_message_filter)
-        async def add_to_list(_, message: Message):
+        async def add_to_queue(_, message: Message):
             record_index, record_value = create_record(message.text)
             record_dict, header = get_order_records_dict_and_header(message.text)
 

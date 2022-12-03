@@ -23,7 +23,7 @@ def create_record(text: str) -> tuple[int | None, str]:
     return record_index, record_value
 
 
-def is_reply_to_my_list_message(_, __, message: Message) -> bool:
+def is_reply_to_my_queue_message(_, __, message: Message) -> bool:
     return message.reply_to_message is not None and \
            message.reply_to_message.from_user.username == BOT_USERNAME and \
            SCROLL_EMOJI in message.reply_to_message.text
