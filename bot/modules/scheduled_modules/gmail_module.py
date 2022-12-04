@@ -1,15 +1,14 @@
-from abc import ABC
-
 from apscheduler.job import Job
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pyrogram import filters
 from pyrogram.types import Message
 
 from bot import database
+from bot.database import get_gmail_address_by_chat_id
 from bot.decorators.on_typed_message import on_typed_message
 from bot.email.gmail_client import GmailClient
+from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.gmail_helper import get_gmail_address_and_app_password_from_parameters
-from bot.helpers.job_helper import check_job_state
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 
@@ -45,3 +44,10 @@ class GmailModule(ScheduledClient):
             database.upsert_gmail(message.chat.id, gmail_address, app_password)
             self._add_job(message.chat.id, 10, gmail_client)
             await self.send_reply_message(message, "Email auth is successful! You may delete the message")
+
+        @on_typed_message(self, filters.command("my_gmail"))
+        async def send_schedule_file(_, message: Message):
+            gmail_address = get_gmail_address_by_chat_id(message.chat.id)
+            if gmail_address is None:
+                raise TelegramBotException("You have not set a gmail connection yet")
+            await self.send_reply_message(message, "Your gmail address is " + gmail_address )
