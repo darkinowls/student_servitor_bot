@@ -29,10 +29,10 @@ def upsert_gmail(chat_id: int, gmail_address: str, app_password: str, module_is_
                                                         upsert=True).matched_count == 1
 
 
-def upsert_schedule(chat_id: int, schedule_json: dict, module_is_on: bool = True) -> bool:
+def upsert_schedule(chat_id: int, schedule: list[dict], module_is_on: bool = True) -> bool:
     return __get_schedule_sessions_collection().update_one({CHAT_ID: chat_id},
                                                            {"$set": {
-                                                               SCHEDULE: schedule_json,
+                                                               SCHEDULE: schedule,
                                                                MODULE_IS_ON: module_is_on
                                                            }},
                                                            upsert=True).matched_count == 1
@@ -44,3 +44,7 @@ def get_all_gmail_sessions() -> Cursor:
 
 def get_all_schedule_sessions() -> Cursor:
     return __get_schedule_sessions_collection().find()
+
+
+def get_schedule_by_chat_id(chat_id: int) -> dict | None:
+    return __get_schedule_sessions_collection().find_one({"chat_id": chat_id}, {"schedule": 1, "_id": 0})

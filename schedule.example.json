@@ -1,0 +1,53 @@
+{
+  "schedule": [
+    {
+      "link": "https://zoom.com/321",
+      "day": "Monday",
+      "time": "08:30",
+      "week": 1,
+      "name": "Math"
+    },
+    {
+      "link": "https://zoom.com/123",
+      "day": "Tuesday",
+      "time": "12:30",
+      "week": 1,
+      "name": "Dancing"
+    },
+    {
+      "link": "https://zoom.com/123",
+      "day": "Wednesday",
+      "time": "11:30",
+      "week": 1,
+      "name": "Economics"
+    },
+    {
+      "link": "https://zoom.com/123",
+      "day": "Thursday",
+      "time": "09:30",
+      "week": 2,
+      "name": "IT bussiness"
+    },
+    {
+      "link": "https://zoom.com/123",
+      "day": "Friday",
+      "time": "10:30",
+      "week": 2,
+      "name": "Data mining"
+    },
+    {
+      "link": "https://zoom.com/123",
+      "day": "Saturday",
+      "time": "10:00",
+      "week": 2,
+      "name": "Dev ops"
+    },
+    {
+      "link": "https://zoom.com/123",
+      "day": "Sunday",
+      "time": "14:30",
+      "week": 2,
+      "name": "Programming"
+    }
+  ]
+}

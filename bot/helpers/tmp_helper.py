@@ -4,14 +4,19 @@ import time
 from bot import TMP_FOLDER
 
 
-def get_or_create_tmp_json_file(filename: str, chat_id: int, text: str = None) -> str:
-    filepath = generate_tmp_filepath(filename, chat_id)
+def get_tmp_json_file(filename: str, chat_id: int, text: str = None) -> str:
+    filepath = create_tmp_json_filepath(filename, chat_id)
     if not os.path.isfile(filepath):
         __create_file(filepath, text)
     return filepath
 
+def create_tmp_json_file(filename: str, chat_id: int, text: str = None) -> str:
+    filepath = create_tmp_json_filepath(filename, chat_id)
+    __create_file(filepath, text)
+    return filepath
 
-def generate_tmp_filepath(filename, chat_id) -> str:
+
+def create_tmp_json_filepath(filename, chat_id) -> str:
     os.makedirs(TMP_FOLDER, exist_ok=True)
     return TMP_FOLDER + filename + "_" + chat_id.__str__() + ".json"
 

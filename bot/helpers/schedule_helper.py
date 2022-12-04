@@ -3,15 +3,8 @@ from bot.database.models.lesson import Lesson
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 
 
-def get_lessons_from_schedule_json(json: dict) -> list[Lesson]:
-    try:
-        schedule: list[dict] = json.get('schedule')
-    except KeyError:
-        raise TelegramBotException('No schedule object in json')
-    lessons: list[Lesson] = []
-    for lesson_json in schedule:
-        lessons.append(Lesson(lesson_json))
-    return lessons
+def get_lessons_from_schedule_json(schedule: list[dict]) -> list[Lesson]:
+    return [Lesson(lesson_json) for lesson_json in schedule]
 
 
 def get_current_week_number() -> int:

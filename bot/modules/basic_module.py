@@ -1,4 +1,3 @@
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pyrogram import filters
 from pyrogram.types import Message
 
@@ -6,27 +5,14 @@ from bot.decorators.on_message import on_message
 from bot.decorators.on_typed_message import on_typed_message
 from bot.helpers.command_helper import get_single_text_parameter
 from bot.helpers.schedule_helper import get_current_week_number
-from bot.helpers.tmp_helper import get_or_create_tmp_json_file, delete_old_tmp_files
-from bot.simple_client import SimpleClient
+from bot.helpers.tmp_helper import get_tmp_json_file
+from bot.modules.simple_client import SimpleClient
 
 
-class BasicBot(SimpleClient):
-
-    def run_file_garbage_collector(self):
-        minutes: int = 60
-        self.__scheduler.add_job(
-            delete_old_tmp_files,
-            "interval",
-            minutes=minutes,
-            id="file_garbage_collector",
-            args=[minutes]
-        )
-        self.__scheduler.start()
+class BasicModule(SimpleClient):
 
     def __init__(self, bot_name, api_id, api_hash, bot_token):
         super().__init__(bot_name=bot_name, api_id=api_id, api_hash=api_hash, bot_token=bot_token)
-        self.__scheduler = AsyncIOScheduler()
-        self.run_file_garbage_collector()
 
         @on_message(self, filters.command("json"))
         async def get_json_from_message(_, message: Message):
@@ -34,9 +20,9 @@ class BasicBot(SimpleClient):
             To get json from the message has sent
             """
             print(message)
-            filepath: str = get_or_create_tmp_json_file(filename="message",
-                                                        chat_id=message.chat.id,
-                                                        text=message.__str__())
+            filepath: str = get_tmp_json_file(filename="message",
+                                              chat_id=message.chat.id,
+                                              text=message.__str__())
             await self.send_document(chat_id=message.chat.id, document=filepath)
 
         @on_message(self, filters.command("hi"))

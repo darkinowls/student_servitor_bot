@@ -4,7 +4,6 @@ from pyrogram import filters
 from pyrogram.filters import Filter
 
 from bot.decorators.on_typed_message import on_typed_message
-from bot.modules.basic_bot import BasicBot
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.command_helper import get_single_text_parameter
 from bot.helpers.queue_helper import Message, \
@@ -12,9 +11,10 @@ from bot.helpers.queue_helper import Message, \
     create_queue_text, SCROLL_EMOJI, is_reply_to_my_queue_message, get_index_list_from_parameters, \
     get_two_indexes_from_parameters, \
     swap_records_by_indexes, remove_records_by_indexes, create_record
+from bot.modules.simple_client import SimpleClient
 
 
-class QueueModule(BasicBot):
+class QueueModule(SimpleClient):
 
     async def edit_student_queue(self, record_dict: OrderedDict, header: str, original_message: Message):
         queue_text: str = create_queue_text(record_dict, header)

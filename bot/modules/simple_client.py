@@ -1,9 +1,6 @@
 from collections.abc import Callable
-from typing import Coroutine
 
 from pyrogram import Client
-from pyrogram.handlers import MessageHandler
-from pyrogram.handlers.handler import Handler
 from pyrogram.types import Message
 
 from bot.exceptions.telegram_bot_exception import TelegramBotException
@@ -23,6 +20,11 @@ class SimpleClient(Client):
         return await self.edit_message_text(chat_id=incoming_message.chat.id,
                                             message_id=incoming_message.reply_to_message_id,
                                             text=text)
+
+    async def send_reply_document(self, incoming_message: Message, filepath: str):
+        return await self.send_document(chat_id=incoming_message.chat.id,
+                                        reply_to_message_id=incoming_message.reply_to_message_id,
+                                        document=filepath)
 
     async def run_wrapped_function(self, message: Message, func: Callable):
         try:
