@@ -4,7 +4,7 @@ from pyrogram.types import Message
 from bot.decorators.on_message import on_message
 from bot.decorators.on_typed_message import on_typed_message
 from bot.helpers.command_helper import get_single_text_parameter
-from bot.helpers.schedule_helper import get_current_week_number
+from bot.helpers.schedule_helper import get_current_week_number, get_current_week_number_formatted
 from bot.helpers.tmp_helper import get_tmp_json_file
 from bot.modules.simple_client import SimpleClient
 
@@ -41,5 +41,5 @@ class BasicModule(SimpleClient):
             await self.send_reply_message(message, text=get_single_text_parameter(message.text))
 
         @on_typed_message(self, filters.command("week"))
-        async def print_week_num(_, message: Message):
-            await self.send_reply_message(message, text=f"Today is ${get_current_week_number()} week")
+        async def print_week_number(_, message: Message):
+            await self.send_reply_message(message, text=f"Today is the {get_current_week_number_formatted()} week")

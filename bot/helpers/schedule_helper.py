@@ -15,6 +15,10 @@ def get_current_week_number() -> int:
     return 1 if week_num % 2 else 2
 
 
+def get_current_week_number_formatted() -> str:
+    return "1st" if get_current_week_number() == 1 else "2nd"
+
+
 def get_current_time_str() -> str:
     return datetime.datetime.now().strftime("%H:%M")
 
