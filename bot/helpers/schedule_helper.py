@@ -1,27 +1,40 @@
-import datetime
-from bot.database.models.lesson import Lesson
-from bot.exceptions.telegram_bot_exception import TelegramBotException
+from apscheduler.job import Job
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from pyrogram import filters
+
+from bot import database
+from bot.decorators.on_typed_message import on_typed_message
+from bot.helpers.job_helper import check_job_state
+from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 
-def get_lessons_from_schedule_json(schedule: list[dict]) -> list[Lesson]:
-    return [Lesson(lesson_json) for lesson_json in schedule]
+def add_job_to_scheduler(scheduler: AsyncIOScheduler, chat_id: int, seconds: int, send_on_schedule: (),
+                         module_name: str, *args) -> Job:
+    return scheduler.add_job(send_on_schedule,
+                             "interval",
+                             seconds=seconds,
+                             id=get_unique_job_id(chat_id, module_name),
+                             replace_existing=True,
+                             args=[chat_id, args[0]])
 
 
-def get_current_week_number() -> int:
-    """
-    :return: number of week. 1 - first week and 2 - second week
-    """
-    week_num: int = datetime.date.today().isocalendar().week + 1
-    return 1 if week_num % 2 else 2
+def get_unique_job_id(chat_id: int, module_name: str) -> str:
+    return module_name + "_job_" + chat_id.__str__()
 
 
-def get_current_week_number_formatted() -> str:
-    return "1st" if get_current_week_number() == 1 else "2nd"
+def register_connection_switchers(client: ScheduledClient, module_name: str):
+    __switch_connection(client, module_name, True)
+    __switch_connection(client, module_name, False)
 
 
-def get_current_time_str() -> str:
-    return datetime.datetime.now().strftime("%H:%M")
+def __switch_connection(client: ScheduledClient, module_name: str, turn_on: bool):
+    turn_on_or_off: str = ("on" if turn_on else "off")
 
-
-def get_current_day_str() -> str:
-    return datetime.datetime.now().strftime("%A")
+    @on_typed_message(client, filters.command(turn_on_or_off + "_" + module_name))
+    async def func(_, message):
+        job: Job | None = client.scheduler.get_job(get_unique_job_id(message.chat.id, module_name))
+        check_job_state(job, module_name, must_job_run=not turn_on)
+        job.pause()
+        database.update_gmail_module(message.chat.id, module_is_on=turn_on)
+        text: str = module_name + " module is " + turn_on_or_off
+        await client.send_reply_message(message, text)

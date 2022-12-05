@@ -1,6 +1,7 @@
 import json
 from pyrogram.types import Document
 from bot.exceptions.telegram_bot_exception import TelegramBotException
+from bot.database.models.lesson import Lesson
 
 
 def check_document_is_json(document: Document) -> bool:
@@ -17,3 +18,7 @@ def load_schedule_json_from_file(filepath) -> list[dict]:
         raise TelegramBotException('JSON syntax error')
     except KeyError:
         raise TelegramBotException('No field "schedule" in the json')
+
+
+def get_lessons_from_schedule_json(schedule: list[dict]) -> list[Lesson]:
+    return [Lesson(lesson_json) for lesson_json in schedule]

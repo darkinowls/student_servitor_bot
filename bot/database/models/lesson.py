@@ -50,3 +50,4 @@ class Lesson:
         if match is None:
             raise TelegramBotException("Time in json is incorrect")
         return time
+
