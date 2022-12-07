@@ -24,7 +24,6 @@ class ScheduleModule(ScheduledClient):
     __module_name: str
 
     def __send_on_schedule(self, *args: int | list[Lesson]):
-        print('B')
         chat_id = args[0]
         lessons: list[Lesson] = args[1]
         week_num: int = get_current_week_number()

@@ -2,7 +2,6 @@ import unittest
 
 from bot.helpers.datetime_helper import get_current_week_number, get_current_time_str, get_current_day_str
 
-
 class MyTestCase(unittest.TestCase):
 
     def test_unicode_escape(self):
@@ -16,6 +15,8 @@ class MyTestCase(unittest.TestCase):
         day_str: str = get_current_day_str()
         time_str: str = get_current_time_str()
         print(week_num, day_str, time_str)
+
+
 
 if __name__ == '__main__':
     unittest.main()

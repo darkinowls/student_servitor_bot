@@ -11,10 +11,12 @@ class Lesson:
     def __init__(self, json: dict):
         self.__json = json
         self.name = self.__get_from_json('name')
-        self.link = self.__parse_link(self.__get_from_json('link'))
         self.day = self.__parse_day(self.__get_from_json('day'))
         self.time = self.__parse_time(self.__get_from_json('time'))
         self.week = self.__parse_week(self.__get_from_json('week'))
+        if 'link' in self.__json.keys():
+            self.link = self.__parse_link(self.__get_from_json('link'))
+        self.link = 'The lesson has begun'
 
     def __get_from_json(self, key: str):
         try:

@@ -8,7 +8,6 @@ from bot.helpers.command_helper import get_parameters_list
 
 SCROLL_EMOJI = '\U0001F4DC'
 
-
 RECORD_REGEX = r'(\d{1,3})?\.?\s*([a-zA-ZА-ЯҐЄІЇа-яґєії]{3,20}.{,20})'
 END_LINE_BEHIND_REGEX = r'(?<=\n)'
 END_AHEAD_REGEX = r'(?=\n|$)'
@@ -29,7 +28,7 @@ def is_reply_to_my_queue_message(_, __, message: Message) -> bool:
            SCROLL_EMOJI in message.reply_to_message.text
 
 
-def get_order_records_dict_and_header(reply_to_message_text: str) -> tuple[OrderedDict[int, str], str]:
+def get_order_record_dict_and_header(reply_to_message_text: str) -> tuple[OrderedDict[int, str], str]:
     record_dict = OrderedDict()
     for record in re.finditer(END_LINE_BEHIND_REGEX + RECORD_REGEX + END_AHEAD_REGEX, reply_to_message_text):
         record_index, record_value = record.groups()

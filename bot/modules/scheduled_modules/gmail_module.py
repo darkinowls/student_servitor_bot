@@ -4,8 +4,11 @@ from pyrogram import filters
 from pyrogram.types import Message
 
 from bot import database
+from bot.database import get_gmail_address_by_chat_id
 from bot.decorators.on_typed_message import on_typed_message
 from bot.email.gmail_client import GmailClient
+from bot.exceptions.telegram_bot_exception import TelegramBotException
+from bot.helpers.gmail_helper import get_gmail_address_and_app_password_from_parameters
 from bot.helpers.schedule_helper import register_connection_switchers, add_job_to_scheduler
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
@@ -13,7 +16,6 @@ from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 class GmailModule(ScheduledClient):
 
     def __send_on_schedule(self, *args: int | GmailClient):
-        print('A')
         chat_id = args[0]
         gmail_client: GmailClient = args[1]
         texts: list[str] = gmail_client.get_new_messages()
