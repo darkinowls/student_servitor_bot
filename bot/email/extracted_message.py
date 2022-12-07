@@ -6,6 +6,8 @@ from bot.constants.gmail import SUBJECT, NAME, EMAIL, PLAIN, SENDER, RECEIVER, S
 from bot.constants.regex import UTF_16_REGEX
 
 
+
+
 class ExtractedMessage:
     subject: str
     sender_email: str
@@ -15,7 +17,7 @@ class ExtractedMessage:
     attachments: list[dict]
 
     def __init__(self, message):
-        self.subject = message.subject if hasattr(message, SUBJECT) else ""
+        self.subject = message.subject if hasattr(message, SUBJECT) else EMPTY_STR
         self.sender_name: str = message.sent_from[0][NAME]
         self.sender_email: str = message.sent_from[0][EMAIL]
         self.receiver_email = message.sent_to[0][EMAIL]
@@ -34,7 +36,8 @@ class ExtractedMessage:
 
         return result_str
 
-    def __parse_text(self, text: str) -> str:
+    @staticmethod
+    def __parse_text(text: str) -> str:
         text = text.replace(RETURN, EMPTY_STR)
         text = text.replace(END_LINE, WHITESPACE)
         text = text.strip()

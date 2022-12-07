@@ -32,26 +32,25 @@ class GmailModule(ScheduledClient):
             module_is_on = bool(session.get(MODULE_IS_ON))
             gmail_client: GmailClient = GmailClient(gmail_address, app_password)
             job: Job = add_job_to_scheduler(self.scheduler, chat_id, self.__INTERVAL_SECS, self.__send_on_schedule,
-                                            self.__MODULE_NAME, gmail_client)
+                                            GMAIL, gmail_client)
             if not module_is_on:
                 job.pause()
         return self.scheduler
 
     def __init__(self, bot_name, api_id, api_hash, bot_token):
         super().__init__(bot_name, api_id, api_hash, bot_token)
-        self.__MODULE_NAME = GMAIL
         self.__INTERVAL_SECS = 10
         self.__add_previous_sessions_to_scheduler()
-        register_connection_switchers(self, self.__MODULE_NAME)
+        register_connection_switchers(self, GMAIL)
 
-        @on_typed_message(self, filters.command(self.__MODULE_NAME))
+        @on_typed_message(self, filters.command(GMAIL))
         async def set_gmail_connection(_, message: Message):
             gmail_address, app_password = get_gmail_address_and_app_password_from_parameters(message.text)
             gmail_client: GmailClient = GmailClient(gmail_address, app_password)
             database.upsert_gmail(message.chat.id, gmail_address, app_password)
             add_job_to_scheduler(self.scheduler, message.chat.id, self.__INTERVAL_SECS, self.__send_on_schedule,
-                                 self.__MODULE_NAME, gmail_client)
-            await self.send_reply_message(message, "Email auth is successful! You may delete the message")
+                                 GMAIL, gmail_client)
+            await self.send_success_reply_message(message, "Email auth is successful! You may delete the message")
 
         @on_typed_message(self, filters.command("my_gmail"))
         async def send_schedule_file(_, message: Message):

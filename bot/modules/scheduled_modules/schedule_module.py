@@ -23,7 +23,6 @@ from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 class ScheduleModule(ScheduledClient):
     scheduler: AsyncIOScheduler
-    __MODULE_NAME: str
 
     def __send_on_schedule(self, *args: int | list[Lesson]):
         chat_id = args[0]
@@ -43,30 +42,29 @@ class ScheduleModule(ScheduledClient):
                 session.get(SCHEDULE))  # it checks and gets lessons
             job: Job = add_job_to_scheduler(self.scheduler, chat_id, self.__INTERVAL_SECS,
                                             self.__send_on_schedule,
-                                            self.__MODULE_NAME, lessons)
+                                            SCHEDULE, lessons)
             if not module_is_on:
                 job.pause()
         return self.scheduler
 
     def __init__(self, bot_name, api_id, api_hash, bot_token):
         super().__init__(bot_name, api_id, api_hash, bot_token)
-        self.__MODULE_NAME = SCHEDULE
         self.__INTERVAL_SECS = 60
         self.__add_previous_sessions_to_scheduler()
-        register_connection_switchers(self, self.__MODULE_NAME)
+        register_connection_switchers(self, SCHEDULE)
 
-        @on_typed_message(self, filters.command(self.__MODULE_NAME))
+        @on_typed_message(self, filters.command(SCHEDULE))
         async def set_gmail_connection(_, message: Message):
             check_document_is_json(message.document)
             filepath: str = await self.download_media(message,
-                                                      file_name=create_tmp_json_filepath("schedule", message.chat.id))
+                                                      file_name=create_tmp_json_filepath(SCHEDULE, message.chat.id))
             schedule: list[dict] = load_schedule_json_from_file(filepath)
             lessons: list[Lesson] = get_lessons_from_schedule_json(schedule)  # it checks and gets lessons
             database.upsert_schedule(chat_id=message.chat.id, schedule=schedule)
             add_job_to_scheduler(self.scheduler, message.chat.id, self.__INTERVAL_SECS,
                                  self.__send_on_schedule,
-                                 self.__MODULE_NAME, lessons)
-            await self.send_reply_message(message, "Schedule module is successfully set!")
+                                 SCHEDULE, lessons)
+            await self.send_success_reply_message(message, "Schedule module is successfully set!")
 
         @on_typed_message(self, filters.command("my_schedule"))
         async def send_schedule_file(_, message: Message):

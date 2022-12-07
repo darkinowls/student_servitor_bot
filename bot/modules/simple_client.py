@@ -3,6 +3,8 @@ from collections.abc import Callable
 from pyrogram import Client
 from pyrogram.types import Message
 
+from bot.constants.emoji import CHECK_BOX_EMOJI
+from bot.constants.general import WHITESPACE
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 
 
@@ -15,6 +17,9 @@ class SimpleClient(Client):
         return await self.send_message(chat_id=incoming_message.chat.id,
                                        reply_to_message_id=incoming_message.id,
                                        text=text)
+
+    async def send_success_reply_message(self, incoming_message: Message, text: str):
+        return await self.send_reply_message(incoming_message, CHECK_BOX_EMOJI + WHITESPACE + text)
 
     async def edit_text_message(self, incoming_message: Message, text: str):
         return await self.edit_message_text(chat_id=incoming_message.chat.id,

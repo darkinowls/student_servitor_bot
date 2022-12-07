@@ -18,11 +18,9 @@ gmail_sessions and schedule_sessions
 
 ## ALL the bot commands
 
-() - element is optional
-
-[] - element is required
-
-*a cursive command* - the command requires the reply to a queue 
+* () - element is optional
+* [] - element is required
+* *a cursive command* - the command requires the reply to a queue 
 
 | Command                   | What it does                                                                           |
 |---------------------------|----------------------------------------------------------------------------------------|
@@ -44,7 +42,6 @@ gmail_sessions and schedule_sessions
 | /week                     | Reports the current week number                                                        |
 
 ---
-
 
 ### Queue module
 
@@ -84,6 +81,7 @@ There are 2 ways to add a record:
 1. Add the last element - requires only name. An example: Denis Jibrony 
 2. Add the record by its index - requires empty space. Examples: 22 Antony Blinken 
 
+---
 
 ### Gmail module
 
@@ -99,6 +97,8 @@ There are 2 ways to add a record:
 The module allows students to bind a gmail account to a group.
 Thereby, every new gmail messages will be sent to the group.
 
+---
+
 ### Schedule module
 
 [] - element is required
@@ -112,6 +112,71 @@ Thereby, every new gmail messages will be sent to the group.
 
 The module allows students to bind a lesson schedule to a group.
 Thereby, the messages about lessons will be sent to the group.
+
+#### Schedule fields:
+
+* week: 1-2. There are odd days(1) and even ones(2). **Required**
+* day: "Monday", "Thursday" ... "Sunday". Any day of the week. **Required**
+* link: a link string of the meeting "https://...". **Optional**
+* name: The subject name or anything else. **Required**
+* time: 24-Hours time format: "00:00". **Required**
+
+
+#### An example of json schedule:
+```json
+{
+  "schedule": [
+    {
+      "link": "https://zoom.com/321",
+      "day": "Monday",
+      "time": "08:30",
+      "week": 1,
+      "name": "Math"
+    },
+    {
+      "day": "Tuesday",
+      "time": "12:30",
+      "week": 1,
+      "name": "Dancing"
+    },
+    {
+      "link": "https://zoom.com/123",
+      "day": "Wednesday",
+      "time": "11:30",
+      "week": 1,
+      "name": "Economics"
+    },
+    {
+      "link": "https://zoom.com/123",
+      "day": "Thursday",
+      "time": "09:30",
+      "week": 2,
+      "name": "IT bussiness"
+    },
+    {
+      "day": "Friday",
+      "time": "10:30",
+      "week": 2,
+      "name": "Data mining"
+    },
+    {
+      "day": "Saturday",
+      "time": "10:00",
+      "week": 2,
+      "name": "Dev ops"
+    },
+    {
+      "link": "https://zoom.com/123",
+      "day": "Sunday",
+      "time": "14:30",
+      "week": 2,
+      "name": "Programming"
+    }
+  ]
+}
+```
+
+---
 
 ### Basic module
 

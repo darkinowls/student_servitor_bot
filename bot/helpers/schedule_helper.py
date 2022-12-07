@@ -3,6 +3,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pyrogram import filters
 
 from bot import database
+from bot.constants.general import INTERVAL
 from bot.decorators.on_typed_message import on_typed_message
 from bot.helpers.job_helper import check_job_state
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
@@ -11,7 +12,7 @@ from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 def add_job_to_scheduler(scheduler: AsyncIOScheduler, chat_id: int, seconds: int, send_on_schedule: (),
                          module_name: str, *args) -> Job:
     return scheduler.add_job(send_on_schedule,
-                             "interval",
+                             INTERVAL,
                              seconds=seconds,
                              id=get_unique_job_id(chat_id, module_name),
                              replace_existing=True,
@@ -36,5 +37,4 @@ def __switch_connection(client: ScheduledClient, module_name: str, turn_on: bool
         check_job_state(job, module_name, must_job_run=not turn_on)
         job.pause()
         database.update_gmail_module(message.chat.id, module_is_on=turn_on)
-        text: str = module_name + " module is " + turn_on_or_off
-        await client.send_reply_message(message, text)
+        await client.send_success_reply_message(message, module_name + " module is " + turn_on_or_off)
