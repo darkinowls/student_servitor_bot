@@ -16,7 +16,7 @@ from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.datetime_helper import get_current_week_number, get_current_time_str, \
     get_current_day_str
 from bot.helpers.json_helper import check_document_is_json, load_schedule_json_from_file, get_lessons_from_schedule_json
-from bot.helpers.scheduler_helper import add_job_to_scheduler, register_connection_switchers
+from bot.helpers.scheduler_helper import register_connection_switchers
 from bot.helpers.tmp_helper import create_tmp_json_filepath, create_tmp_json_file
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
@@ -40,9 +40,9 @@ class ScheduleModule(ScheduledClient):
             chat_id = int(session.get(CHAT_ID))
             module_is_on = bool(session.get(MODULE_IS_ON))
             lessons: list[Lesson] = get_lessons_from_schedule_json(session.get(SCHEDULE))  # it checks and gets lessons
-            job: Job = add_job_to_scheduler(self.scheduler, chat_id, INTERVAL_SECS_SCHEDULE,
-                                            self.__send_on_schedule,
-                                            SCHEDULE, lessons)
+            job: Job = self.add_job_to_scheduler(chat_id, INTERVAL_SECS_SCHEDULE,
+                                                 self.__send_on_schedule,
+                                                 SCHEDULE, lessons)
             if not module_is_on:
                 job.pause()
         return self.scheduler
@@ -60,9 +60,9 @@ class ScheduleModule(ScheduledClient):
             schedule: list[dict] = load_schedule_json_from_file(filepath)
             lessons: list[Lesson] = get_lessons_from_schedule_json(schedule)  # it checks and gets lessons
             database.upsert_schedule(chat_id=message.chat.id, schedule=schedule)
-            add_job_to_scheduler(self.scheduler, message.chat.id, INTERVAL_SECS_SCHEDULE,
-                                 self.__send_on_schedule,
-                                 SCHEDULE, lessons)
+            self.add_job_to_scheduler(message.chat.id, INTERVAL_SECS_SCHEDULE,
+                                      self.__send_on_schedule,
+                                      SCHEDULE, lessons)
             await self.send_success_reply_message(message, "Schedule module is successfully set!")
 
         @on_typed_message(self, filters.command("my_schedule"))

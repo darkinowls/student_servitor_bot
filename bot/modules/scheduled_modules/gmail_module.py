@@ -11,7 +11,7 @@ from bot.decorators.on_typed_message import on_typed_message
 from bot.email.gmail_client import GmailClient
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.gmail_helper import get_gmail_address_and_app_password_from_parameters
-from bot.helpers.scheduler_helper import register_connection_switchers, add_job_to_scheduler
+from bot.helpers.scheduler_helper import register_connection_switchers
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 
@@ -31,8 +31,8 @@ class GmailModule(ScheduledClient):
             gmail_address = session.get(GMAIL_ADDRESS)
             module_is_on = bool(session.get(MODULE_IS_ON))
             gmail_client: GmailClient = GmailClient(gmail_address, app_password)
-            job: Job = add_job_to_scheduler(self.scheduler, chat_id, INTERVAL_SECS_GMAIL, self.__send_on_schedule,
-                                            GMAIL, gmail_client)
+            job: Job = self.add_job_to_scheduler(chat_id, INTERVAL_SECS_GMAIL, self.__send_on_schedule,
+                                                 GMAIL, gmail_client)
             if not module_is_on:
                 job.pause()
         return self.scheduler
@@ -48,8 +48,8 @@ class GmailModule(ScheduledClient):
             gmail_address, app_password = get_gmail_address_and_app_password_from_parameters(message.text)
             gmail_client: GmailClient = GmailClient(gmail_address, app_password)
             database.upsert_gmail(message.chat.id, gmail_address, app_password)
-            add_job_to_scheduler(self.scheduler, message.chat.id, INTERVAL_SECS_GMAIL, self.__send_on_schedule,
-                                 GMAIL, gmail_client)
+            self.add_job_to_scheduler(message.chat.id, INTERVAL_SECS_GMAIL, self.__send_on_schedule,
+                                      GMAIL, gmail_client)
             await self.send_success_reply_message(message, "Email auth is successful! You may delete the message")
 
         @on_typed_message(self, filters.command("my_gmail"))

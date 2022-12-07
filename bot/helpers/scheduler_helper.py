@@ -18,22 +18,7 @@ def check_job_state(job: Job, module_name: str, must_job_run: bool):
         raise TelegramBotException(module_name + " module is already off")
 
 
-def add_job_to_scheduler(scheduler: AsyncIOScheduler,
-                         chat_id: int,
-                         seconds: int,
-                         function: (),
-                         module_name: str,
-                         *args) -> Job:
-    return scheduler.add_job(function,
-                             INTERVAL,
-                             seconds=seconds,
-                             id=get_unique_job_id(chat_id, module_name),
-                             replace_existing=True,
-                             args=[args[0], chat_id])
 
-
-def get_unique_job_id(chat_id: int, module_name: str) -> str:
-    return module_name + "_job_" + chat_id.__str__()
 
 
 def register_connection_switchers(client: ScheduledClient, module_name: str):
@@ -42,7 +27,7 @@ def register_connection_switchers(client: ScheduledClient, module_name: str):
 
 
 def __switch_connection(client: ScheduledClient, module_name: str, turn_on: bool):
-    turn_on_or_off: str = ("on" if turn_on else "off")
+    turn_on_or_off: str = "on" if turn_on else "off"
 
     @on_typed_message(client, filters.command(turn_on_or_off + "_" + module_name))
     async def func(_, message):
