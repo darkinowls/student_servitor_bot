@@ -2,15 +2,15 @@ import re
 from collections import OrderedDict
 from pyrogram.types import Message
 
-from bot import BOT_USERNAME
+from bot.constants.emoji import SCROLL_EMOJI
+from bot.constants.load_env import BOT_USERNAME
+from bot.constants.regex import RECORD_REGEX, END_LINE_BEHIND_REGEX, END_AHEAD_REGEX
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.command_helper import get_parameters_list
 
-SCROLL_EMOJI = '\U0001F4DC'
 
-RECORD_REGEX = r'(\d{1,3})?\.?\s*([a-zA-ZА-ЯҐЄІЇа-яґєії]{3,20}.{,20})'
-END_LINE_BEHIND_REGEX = r'(?<=\n)'
-END_AHEAD_REGEX = r'(?=\n|$)'
+
+
 
 
 def create_record(text: str) -> tuple[int | None, str]:
@@ -33,13 +33,13 @@ def get_order_record_dict_and_header(reply_to_message_text: str) -> tuple[Ordere
     for record in re.finditer(END_LINE_BEHIND_REGEX + RECORD_REGEX + END_AHEAD_REGEX, reply_to_message_text):
         record_index, record_value = record.groups()
         record_dict[int(record_index)] = record_value
-    return record_dict, reply_to_message_text.split('\n', 1)[0]
+    return record_dict, reply_to_message_text.split(END_LINE, 1)[0]
 
 
 def create_queue_text(record_dict: OrderedDict[int, str], header: str) -> str:
-    student_queue_text: str = header + '\n'
+    student_queue_text: str = header + END_LINE
     for record_index, record_value in sorted(record_dict.items()):
-        student_queue_text += str(record_index) + '. ' + record_value + '\n'
+        student_queue_text += str(record_index) + '. ' + record_value + END_LINE
     return student_queue_text
 
 

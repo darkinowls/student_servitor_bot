@@ -1,17 +1,19 @@
 import imaplib
 
 from imbox import Imbox
+
+from bot.constants.gmail import IMAP_GMAIL_SERVER
 from bot.email.extracted_message import ExtractedMessage
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 
 
 class GmailClient:
-    __IMAP_SERVER: str = "imap.gmail.com"
+
     __imbox: Imbox
 
     def __init__(self, email_address: str, password: str):
         try:
-            self.__imbox = Imbox(self.__IMAP_SERVER, username=email_address, password=password)
+            self.__imbox = Imbox(IMAP_GMAIL_SERVER, username=email_address, password=password)
         except imaplib.IMAP4.error:
             raise TelegramBotException('The authentication has been failed. Please check the docs')
 

@@ -9,13 +9,14 @@ from bot.modules.simple_client import SimpleClient
 
 class ScheduledClient(SimpleClient):
     scheduler: AsyncIOScheduler
+    __FILE_GARBAGE_COLLECTOR = "file_garbage_collector"
 
     def __add_file_garbage_collector_job(self, minutes) -> Job:
         return self.scheduler.add_job(
             delete_old_tmp_files,
             "interval",
             minutes=minutes,
-            id="file_garbage_collector",
+            id=self.__FILE_GARBAGE_COLLECTOR,
             args=[minutes]
         )
 

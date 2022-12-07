@@ -4,6 +4,8 @@ from pyrogram import filters
 from pyrogram.types import Message
 
 from bot import database
+from bot.constants.database import CHAT_ID, APP_PASSWORD, GMAIL_ADDRESS, MODULE_IS_ON
+from bot.constants.gmail import GMAIL
 from bot.database import get_gmail_address_by_chat_id
 from bot.decorators.on_typed_message import on_typed_message
 from bot.email.gmail_client import GmailClient
@@ -24,30 +26,31 @@ class GmailModule(ScheduledClient):
 
     def __add_previous_sessions_to_scheduler(self) -> AsyncIOScheduler:
         for session in database.get_all_gmail_sessions():
-            chat_id = int(session.get('chat_id'))
-            app_password = session.get('app_password')
-            gmail_address = session.get('gmail_address')
-            module_is_on = bool(session.get('module_is_on'))
+            chat_id = int(session.get(CHAT_ID))
+            app_password = session.get(APP_PASSWORD)
+            gmail_address = session.get(GMAIL_ADDRESS)
+            module_is_on = bool(session.get(MODULE_IS_ON))
             gmail_client: GmailClient = GmailClient(gmail_address, app_password)
-            job: Job = add_job_to_scheduler(self.scheduler, chat_id, 10, self.__send_on_schedule,
-                                            self.__module_name, gmail_client)
+            job: Job = add_job_to_scheduler(self.scheduler, chat_id, self.__INTERVAL_SECS, self.__send_on_schedule,
+                                            self.__MODULE_NAME, gmail_client)
             if not module_is_on:
                 job.pause()
         return self.scheduler
 
     def __init__(self, bot_name, api_id, api_hash, bot_token):
         super().__init__(bot_name, api_id, api_hash, bot_token)
-        self.__module_name = "gmail"
+        self.__MODULE_NAME = GMAIL
+        self.__INTERVAL_SECS = 10
         self.__add_previous_sessions_to_scheduler()
-        register_connection_switchers(self, self.__module_name)
+        register_connection_switchers(self, self.__MODULE_NAME)
 
-        @on_typed_message(self, filters.command("gmail"))
+        @on_typed_message(self, filters.command(self.__MODULE_NAME))
         async def set_gmail_connection(_, message: Message):
             gmail_address, app_password = get_gmail_address_and_app_password_from_parameters(message.text)
             gmail_client: GmailClient = GmailClient(gmail_address, app_password)
             database.upsert_gmail(message.chat.id, gmail_address, app_password)
-            add_job_to_scheduler(self.scheduler, message.chat.id, 10, self.__send_on_schedule,
-                                 self.__module_name, gmail_client)
+            add_job_to_scheduler(self.scheduler, message.chat.id, self.__INTERVAL_SECS, self.__send_on_schedule,
+                                 self.__MODULE_NAME, gmail_client)
             await self.send_reply_message(message, "Email auth is successful! You may delete the message")
 
         @on_typed_message(self, filters.command("my_gmail"))

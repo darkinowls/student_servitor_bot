@@ -1,7 +1,7 @@
 import os
 import time
 
-from bot import TMP_FOLDER
+from bot.constants.general import TMP_FOLDER
 
 
 def get_tmp_json_file(filename: str, chat_id: int, text: str = None) -> str:
@@ -9,6 +9,7 @@ def get_tmp_json_file(filename: str, chat_id: int, text: str = None) -> str:
     if not os.path.isfile(filepath):
         __create_file(filepath, text)
     return filepath
+
 
 def create_tmp_json_file(filename: str, chat_id: int, text: str = None) -> str:
     filepath = create_tmp_json_filepath(filename, chat_id)
@@ -22,7 +23,7 @@ def create_tmp_json_filepath(filename, chat_id) -> str:
 
 
 def __create_file(filepath, text) -> int:
-    with open(filepath, mode="w", encoding="utf-8") as json_file:
+    with open(filepath, mode="w") as json_file:
         return json_file.write(text.__str__())
 
 
