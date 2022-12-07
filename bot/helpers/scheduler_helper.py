@@ -5,18 +5,31 @@ from pyrogram import filters
 from bot import database
 from bot.constants.general import INTERVAL
 from bot.decorators.on_typed_message import on_typed_message
-from bot.helpers.job_helper import check_job_state
+from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 
-def add_job_to_scheduler(scheduler: AsyncIOScheduler, chat_id: int, seconds: int, send_on_schedule: (),
-                         module_name: str, *args) -> Job:
-    return scheduler.add_job(send_on_schedule,
+def check_job_state(job: Job, module_name: str, must_job_run: bool):
+    if job is None:
+        raise TelegramBotException(module_name + " is not set in this chat")
+    if job.next_run_time and not must_job_run:
+        raise TelegramBotException(module_name + " module is already on")
+    if job.next_run_time is None and must_job_run:
+        raise TelegramBotException(module_name + " module is already off")
+
+
+def add_job_to_scheduler(scheduler: AsyncIOScheduler,
+                         chat_id: int,
+                         seconds: int,
+                         function: (),
+                         module_name: str,
+                         *args) -> Job:
+    return scheduler.add_job(function,
                              INTERVAL,
                              seconds=seconds,
                              id=get_unique_job_id(chat_id, module_name),
                              replace_existing=True,
-                             args=[chat_id, args[0]])
+                             args=[args[0], chat_id])
 
 
 def get_unique_job_id(chat_id: int, module_name: str) -> str:

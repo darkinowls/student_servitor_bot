@@ -13,3 +13,5 @@ GMAIL = "gmail"
 IMAP_GMAIL_SERVER: str = "imap.gmail.com"
 
 UNICODE_ESCAPE = "unicode_escape"
+
+INTERVAL_SECS_GMAIL = 10

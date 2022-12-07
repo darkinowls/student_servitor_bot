@@ -3,14 +3,11 @@ from collections import OrderedDict
 from pyrogram.types import Message
 
 from bot.constants.emoji import SCROLL_EMOJI
+from bot.constants.general import END_LINE
 from bot.constants.load_env import BOT_USERNAME
 from bot.constants.regex import RECORD_REGEX, END_LINE_BEHIND_REGEX, END_AHEAD_REGEX
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.command_helper import get_parameters_list
-
-
-
-
 
 
 def create_record(text: str) -> tuple[int | None, str]:
@@ -64,7 +61,7 @@ def remove_records_by_indexes(index_list: list[int], record_dict: OrderedDict) -
 def get_two_indexes_from_parameters(text: str) -> tuple[int, int]:
     index_list: list[int] = get_index_list_from_parameters(text=text)
     if len(index_list) != 2:
-        raise TelegramBotException("Have to be 2 indexes")
+        raise TelegramBotException("Type 2 indexes")
     first = index_list[0]
     second = index_list[1]
     if first == second:

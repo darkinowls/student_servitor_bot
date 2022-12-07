@@ -5,21 +5,21 @@ from pyrogram.types import Message
 
 from bot import database
 from bot.constants.database import CHAT_ID, APP_PASSWORD, GMAIL_ADDRESS, MODULE_IS_ON
-from bot.constants.gmail import GMAIL
+from bot.constants.gmail import GMAIL, INTERVAL_SECS_GMAIL
 from bot.database import get_gmail_address_by_chat_id
 from bot.decorators.on_typed_message import on_typed_message
 from bot.email.gmail_client import GmailClient
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.gmail_helper import get_gmail_address_and_app_password_from_parameters
-from bot.helpers.schedule_helper import register_connection_switchers, add_job_to_scheduler
+from bot.helpers.scheduler_helper import register_connection_switchers, add_job_to_scheduler
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 
 class GmailModule(ScheduledClient):
 
     def __send_on_schedule(self, *args: int | GmailClient):
-        chat_id = args[0]
-        gmail_client: GmailClient = args[1]
+        gmail_client: GmailClient = args[0]
+        chat_id = args[1]
         texts: list[str] = gmail_client.get_new_messages()
         for text in texts:
             self.send_message(chat_id=chat_id, text=text)
@@ -31,7 +31,7 @@ class GmailModule(ScheduledClient):
             gmail_address = session.get(GMAIL_ADDRESS)
             module_is_on = bool(session.get(MODULE_IS_ON))
             gmail_client: GmailClient = GmailClient(gmail_address, app_password)
-            job: Job = add_job_to_scheduler(self.scheduler, chat_id, self.__INTERVAL_SECS, self.__send_on_schedule,
+            job: Job = add_job_to_scheduler(self.scheduler, chat_id, INTERVAL_SECS_GMAIL, self.__send_on_schedule,
                                             GMAIL, gmail_client)
             if not module_is_on:
                 job.pause()
@@ -39,7 +39,7 @@ class GmailModule(ScheduledClient):
 
     def __init__(self, bot_name, api_id, api_hash, bot_token):
         super().__init__(bot_name, api_id, api_hash, bot_token)
-        self.__INTERVAL_SECS = 10
+        INTERVAL_SECS_GMAIL = 10
         self.__add_previous_sessions_to_scheduler()
         register_connection_switchers(self, GMAIL)
 
@@ -48,7 +48,7 @@ class GmailModule(ScheduledClient):
             gmail_address, app_password = get_gmail_address_and_app_password_from_parameters(message.text)
             gmail_client: GmailClient = GmailClient(gmail_address, app_password)
             database.upsert_gmail(message.chat.id, gmail_address, app_password)
-            add_job_to_scheduler(self.scheduler, message.chat.id, self.__INTERVAL_SECS, self.__send_on_schedule,
+            add_job_to_scheduler(self.scheduler, message.chat.id, INTERVAL_SECS_GMAIL, self.__send_on_schedule,
                                  GMAIL, gmail_client)
             await self.send_success_reply_message(message, "Email auth is successful! You may delete the message")
 

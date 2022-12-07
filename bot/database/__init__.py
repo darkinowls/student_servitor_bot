@@ -1,9 +1,23 @@
+from pymongo import MongoClient
+from pymongo.collection import Collection
 from pymongo.cursor import Cursor
+from pymongo.database import Database
 
-from bot.constants.database import CHAT_ID, GMAIL_ADDRESS, APP_PASSWORD, MODULE_IS_ON, SCHEDULE, SET_COMMAND, ID
-from bot.database.__connection import __get_schedule_sessions_collection, __get_gmail_sessions_collection
+from bot.constants.database import CHAT_ID, GMAIL_ADDRESS, APP_PASSWORD, MODULE_IS_ON, SCHEDULE, SET_COMMAND, ID, \
+    GMAIL_SESSIONS, STUDENT_BOT, SCHEDULE_SESSIONS
+from bot.constants.load_env import CONNECTION_STRING
 
 
+def __get_database() -> Database:
+    return MongoClient(CONNECTION_STRING).get_database(STUDENT_BOT)
+
+
+def __get_gmail_sessions_collection() -> Collection:
+    return __get_database().get_collection(GMAIL_SESSIONS)
+
+
+def __get_schedule_sessions_collection() -> Collection:
+    return __get_database().get_collection(SCHEDULE_SESSIONS)
 
 
 def update_gmail_module(chat_id: int, module_is_on: bool) -> bool:

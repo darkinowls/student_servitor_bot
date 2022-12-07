@@ -3,7 +3,7 @@ from pyrogram.types import Document
 
 from bot.constants.database import SCHEDULE
 from bot.exceptions.telegram_bot_exception import TelegramBotException
-from bot.database.models.lesson import Lesson
+from bot.database.lesson import Lesson
 
 
 def check_document_is_json(document: Document) -> bool:

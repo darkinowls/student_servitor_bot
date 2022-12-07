@@ -6,3 +6,5 @@ WEEK = 'week'
 TIME = 'time'
 DAY = 'day'
 NAME = 'name'
+
+INTERVAL_SECS_SCHEDULE = 60

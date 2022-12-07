@@ -5,8 +5,6 @@ from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.queue_helper import get_parameters_list
 
 
-
-
 def get_gmail_address_and_app_password_from_parameters(text: str) -> tuple[str, str]:
     index_list: list[str] = get_parameters_list(text)
     if len(index_list) != 2:
