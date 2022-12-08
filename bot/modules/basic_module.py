@@ -1,5 +1,5 @@
 from pyrogram import filters
-from pyrogram.types import Message
+from pyrogram.types import Message, CallbackQuery
 
 from bot.decorators.on_message import on_message
 from bot.decorators.on_typed_message import on_typed_message
@@ -34,7 +34,7 @@ class BasicModule(SimpleClient):
 
         @on_typed_message(self, filters.reply & filters.command("copy"))
         async def set_message_text(_, message: Message):
-            await self.edit_text_message(message, text=get_single_text_parameter(message.text))
+            await self.edit_replied_message(message, text=get_single_text_parameter(message.text))
 
         @on_typed_message(self, filters.command("copy"))
         async def copy_message_text(_, message: Message):
@@ -43,3 +43,8 @@ class BasicModule(SimpleClient):
         @on_typed_message(self, filters.command("week"))
         async def print_week_number(_, message: Message):
             await self.send_reply_message(message, text=f"Today is the {get_current_week_number_formatted()} week")
+
+        @self.on_callback_query(filters.regex("a"))
+        def a(_, callback_query: CallbackQuery):
+
+            callback_query.answer(f"AAAAAA + {callback_query.data}")

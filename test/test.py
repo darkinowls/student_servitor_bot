@@ -3,6 +3,7 @@ import unittest
 from bot.email.extracted_message import UNICODE_ESCAPE
 from bot.helpers.datetime_helper import get_current_week_number, get_current_time_str, get_current_day_str
 
+
 class MyTestCase(unittest.TestCase):
 
     def test_unicode_escape(self):
@@ -17,10 +18,13 @@ class MyTestCase(unittest.TestCase):
         time_str: str = get_current_time_str()
         print(week_num, day_str, time_str)
 
-
     def test_str(self):
         a = "A", "B"
         print(a)
+
+    def test_delete_prev_char(self):
+        print("123\b")
+
 
 if __name__ == '__main__':
     unittest.main()

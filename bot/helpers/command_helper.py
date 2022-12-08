@@ -38,6 +38,6 @@ def get_single_text_parameter(text: str, should_exist: bool = True) -> str:
         raise TelegramBotException("No parameter")
 
 
-def __check_param_size(parameter):
+def __check_param_size(parameter: str):
     if len(parameter) > 100:
         raise TelegramBotException("Too big parameter")

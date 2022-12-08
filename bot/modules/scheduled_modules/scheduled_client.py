@@ -9,14 +9,14 @@ from bot.modules.simple_client import SimpleClient
 class ScheduledClient(SimpleClient):
     scheduler: AsyncIOScheduler
 
-    def __get_unique_job_id(self, chat_id: int, module_name: str) -> str:
+    def get_unique_job_id(self, chat_id: int, module_name: str) -> str:
         return module_name + "_job_" + chat_id.__str__()
 
     def add_job_to_scheduler(self, chat_id: int, seconds: int, function: (), module_name: str, *args) -> Job:
         return self.scheduler.add_job(function,
                                       INTERVAL,
                                       seconds=seconds,
-                                      id=self.__get_unique_job_id(chat_id, module_name),
+                                      id=self.get_unique_job_id(chat_id, module_name),
                                       replace_existing=True,
                                       args=[args[0], chat_id])
 

@@ -65,7 +65,9 @@ The record is an entity with a number(index) and the name of a student.
 
 > A name should contain less than 100 characters.
 
-> A number(index) is a natural number (1,2,3,4 ... 123, 124 ...)
+> A number(index) is a natural number (1,2,3,4 ... 123, 124 ...) 
+
+> 256 is maximum number of records
 
 > Queues are sorted by ascending numbers.
 
@@ -179,6 +181,13 @@ Thereby, the messages about lessons will be sent to the group.
 ---
 
 ### Basic module
+
+| Command                   | What it does                                                                           |
+|---------------------------|----------------------------------------------------------------------------------------|
+| /hi                       | Replies "hello". It is made if the bot works                                           |
+| /json                     | Sends the json file of the message                                                     |
+| /week                     | Reports the current week number                                                        |
+
 
 The module allows students to use simple commands 
 to make the bot say "hello", to send json of message and

@@ -18,9 +18,6 @@ def check_job_state(job: Job, module_name: str, must_job_run: bool):
         raise TelegramBotException(module_name + " module is already off")
 
 
-
-
-
 def register_connection_switchers(client: ScheduledClient, module_name: str):
     __switch_connection(client, module_name, True)
     __switch_connection(client, module_name, False)
@@ -31,7 +28,7 @@ def __switch_connection(client: ScheduledClient, module_name: str, turn_on: bool
 
     @on_typed_message(client, filters.command(turn_on_or_off + "_" + module_name))
     async def func(_, message):
-        job: Job | None = client.scheduler.get_job(get_unique_job_id(message.chat.id, module_name))
+        job: Job | None = client.scheduler.get_job(client.get_unique_job_id(message.chat.id, module_name))
         check_job_state(job, module_name, must_job_run=not turn_on)
         job.pause()
         database.update_gmail_module(message.chat.id, module_is_on=turn_on)
