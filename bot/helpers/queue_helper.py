@@ -1,13 +1,14 @@
 import re
 from collections import OrderedDict
-from pyrogram.types import Message
+from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 
 from bot.constants.emoji import SCROLL_EMOJI
 from bot.constants.general import END_LINE
-from bot.constants.load_env import BOT_USERNAME
+from bot.constants.help_alerts import SWAP_HELP, RM_HELP, HEADER_HELP, ADD_HELP
 from bot.constants.regex import RECORD_REGEX, END_LINE_BEHIND_REGEX, END_AHEAD_REGEX
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.command_helper import get_parameters_list
+from bot.modules.simple_client import SimpleClient
 
 
 def create_record(text: str) -> tuple[int | None, str]:
@@ -19,9 +20,9 @@ def create_record(text: str) -> tuple[int | None, str]:
     return record_index, record_value
 
 
-def is_reply_to_my_queue_message(_, __, message: Message) -> bool:
+async def is_reply_to_my_queue_message(_, client: SimpleClient, message: Message) -> bool:
     return message.reply_to_message is not None and \
-           message.reply_to_message.from_user.username == BOT_USERNAME and \
+           message.reply_to_message.from_user.username == (await client.get_me()).username and \
            SCROLL_EMOJI in message.reply_to_message.text
 
 
@@ -88,3 +89,14 @@ def swap_records_by_indexes(first: int, second: int, record_dict: OrderedDict) -
     else:
         record_dict[first] = record_dict.pop(second)
     return record_dict
+
+
+def create_queue_help_markup() -> InlineKeyboardMarkup:
+    swap_help = InlineKeyboardButton("swap", callback_data=SWAP_HELP)
+    rm_help = InlineKeyboardButton("remove", callback_data=RM_HELP)
+    header_help = InlineKeyboardButton("header", callback_data=HEADER_HELP)
+    add_help = InlineKeyboardButton("add", callback_data=ADD_HELP)
+    return InlineKeyboardMarkup([
+        [swap_help, rm_help],
+        [header_help, add_help]
+    ])
