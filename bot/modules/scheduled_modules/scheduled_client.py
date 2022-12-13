@@ -1,7 +1,10 @@
 from apscheduler.job import Job
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
-from bot.constants.general import FILE_GARBAGE_COLLECTOR, INTERVAL_SECS_GARBAGE_COLLECTOR, INTERVAL
+from bot.constants.emoji import CHECK_BOX_EMOJI
+from bot.constants.general import FILE_GARBAGE_COLLECTOR, INTERVAL_SECS_GARBAGE_COLLECTOR, INTERVAL, WHITESPACE
+from bot.constants.help_alerts import TURN_TITLE
 from bot.helpers.tmp_helper import delete_old_tmp_files
 from bot.modules.simple_client import SimpleClient
 
@@ -30,3 +33,19 @@ class ScheduledClient(SimpleClient):
                                   INTERVAL_SECS_GARBAGE_COLLECTOR)
 
         self.scheduler.start()
+        self.__reply_markup = InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("on", callback_data=TURN_TITLE + "on"),
+                 InlineKeyboardButton("off", callback_data=TURN_TITLE + "off")]
+            ]
+        )
+
+    async def send_success_reply_message(self, incoming_message: Message, text: str) -> Message:
+        return await super().send_reply_message(incoming_message, CHECK_BOX_EMOJI + WHITESPACE + text,
+                                                self.__reply_markup)
+
+    async def send_turnable_message(self, incoming_message: Message, text: str) -> Message:
+        return await super().send_reply_message(incoming_message, text, self.__reply_markup)
+
+    async def send_turnable_document(self, incoming_message: Message, filepath: str) -> Message:
+        return await super().send_reply_document(incoming_message, filepath, self.__reply_markup)

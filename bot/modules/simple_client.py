@@ -1,7 +1,7 @@
 from collections.abc import Callable
 
 from pyrogram import Client
-from pyrogram.types import Message, InlineKeyboardMarkup
+from pyrogram.types import Message, InlineKeyboardMarkup, CallbackQuery
 from pyrogram.types import User
 from bot.constants.emoji import CHECK_BOX_EMOJI
 from bot.constants.general import WHITESPACE
@@ -18,17 +18,15 @@ class SimpleClient(Client):
                                  reply_markup: InlineKeyboardMarkup = None) -> Message:
         return await incoming_message.reply_text(text=text, quote=True, reply_markup=reply_markup)
 
-    async def send_success_reply_message(self, incoming_message: Message, text: str) -> Message:
-        return await self.send_reply_message(incoming_message, CHECK_BOX_EMOJI + WHITESPACE + text)
-
     @staticmethod
     async def edit_replied_message(incoming_message: Message, text: str,
                                    reply_markup: InlineKeyboardMarkup = None) -> Message:
         return await incoming_message.reply_to_message.edit_text(text, reply_markup=reply_markup)
 
     @staticmethod
-    async def send_reply_document(incoming_message: Message, filepath: str) -> Message:
-        return await incoming_message.reply_document(document=filepath, quote=True)
+    async def send_reply_document(incoming_message: Message, filepath: str,
+                                  reply_markup: InlineKeyboardMarkup = None) -> Message:
+        return await incoming_message.reply_document(document=filepath, quote=True, reply_markup=reply_markup)
 
     async def run_wrapped_function(self, message: Message, func: Callable):
         try:
@@ -36,5 +34,3 @@ class SimpleClient(Client):
         except TelegramBotException as exception:
             print(exception)
             await self.send_reply_message(message, text=exception.__str__())
-
-

@@ -1,5 +1,7 @@
 HELP_TITLE = "H"
 
+TURN_TITLE = "T"
+
 SWAP_HELP = HELP_TITLE + "/swap 1 2\n" \
                          "Swaps the replied queue records by indexes"
 

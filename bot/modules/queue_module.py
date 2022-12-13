@@ -2,7 +2,9 @@ from collections import OrderedDict
 
 from pyrogram import filters
 from pyrogram.filters import Filter
+from pyrogram.types import CallbackQuery
 
+from bot.constants.help_alerts import HELP_TITLE
 from bot.decorators.on_typed_message import on_typed_message
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.command_helper import get_single_text_parameter
@@ -52,6 +54,10 @@ class QueueModule(SimpleClient):
             message = await self.send_reply_message(message, header, reply_markup=self.__help_markup)
             await message.pin(both_sides=True)
 
+        @self.on_callback_query(filters.regex(r"^" + HELP_TITLE))
+        async def show_helpful_alert(_, callback_query: CallbackQuery):
+            helpful_message: str = callback_query.data[len(HELP_TITLE):]
+            await callback_query.answer(helpful_message, show_alert=True)
 
         @on_typed_message(self, reply_to_my_list_message_filter)
         async def add_to_queue(_, message: Message):

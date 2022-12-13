@@ -1,7 +1,7 @@
 from apscheduler.job import Job
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pyrogram import filters
-from pyrogram.types import Message
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot import database
 from bot.constants.database import CHAT_ID, APP_PASSWORD, GMAIL_ADDRESS, MODULE_IS_ON
@@ -43,6 +43,7 @@ class GmailModule(ScheduledClient):
         self.__add_previous_sessions_to_scheduler()
         register_connection_switchers(self, GMAIL)
 
+
         @on_typed_message(self, filters.regex(GMAIL + r"\s*" + r"$"))
         async def send_schedule_file(_, message: Message):
             gmail_address: str = get_gmail_address_by_chat_id(message.chat.id)
@@ -51,7 +52,7 @@ class GmailModule(ScheduledClient):
                                            "To set a connection, use the command with gmail app password:\n"
                                            "/gmail [gmail] [app-pass]"
                                            )
-            await self.send_reply_message(message,
+            await self.send_turnable_message(message,
                                           "Your current gmail address is " + gmail_address)
 
         @on_typed_message(self, filters.command(GMAIL))
@@ -61,4 +62,5 @@ class GmailModule(ScheduledClient):
             database.upsert_gmail(message.chat.id, gmail_address, app_password)
             self.add_job_to_scheduler(message.chat.id, INTERVAL_SECS_GMAIL, self.__send_on_schedule,
                                       GMAIL, gmail_client)
-            await self.send_success_reply_message(message, "Email auth is successful! You may delete the message")
+            await self.send_success_reply_message(message,
+                                                  "Email auth is set successfully! You may delete the message")

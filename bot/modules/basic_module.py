@@ -16,10 +16,7 @@ class BasicModule(SimpleClient):
     def __init__(self, bot_name, api_id, api_hash, bot_token):
         super().__init__(bot_name=bot_name, api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
-        @self.on_callback_query(filters.regex(r"^" + HELP_TITLE))
-        async def show_helpful_alert(_, callback_query: CallbackQuery):
-            helpful_message: str = callback_query.data[len(HELP_TITLE):]
-            await callback_query.answer(helpful_message, show_alert=True)
+
 
         @on_message(self, filters.command("json"))
         async def get_json_from_message(_, message: Message):
