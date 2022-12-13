@@ -57,9 +57,9 @@ def get_all_schedule_sessions() -> Cursor:
     return __get_schedule_sessions_collection().find()
 
 
-def get_schedule_by_chat_id(chat_id: int) -> dict | None:
-    return __get_schedule_sessions_collection().find_one({CHAT_ID: chat_id}, {SCHEDULE: 1, ID: 0})
+def get_schedule_by_chat_id(chat_id: int) -> str | None:
+    return __get_schedule_sessions_collection().find_one({CHAT_ID: chat_id}, {SCHEDULE: 1, ID: 0}).get(SCHEDULE)
 
 def get_gmail_address_by_chat_id(chat_id: int) -> str | None:
-    return __get_gmail_sessions_collection().find_one({CHAT_ID: chat_id}, {SCHEDULE: 1, ID: 0})
+    return __get_gmail_sessions_collection().find_one({CHAT_ID: chat_id}, {GMAIL_ADDRESS: 1, ID: 0}).get(GMAIL_ADDRESS)
 

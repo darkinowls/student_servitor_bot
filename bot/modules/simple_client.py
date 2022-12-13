@@ -36,3 +36,5 @@ class SimpleClient(Client):
         except TelegramBotException as exception:
             print(exception)
             await self.send_reply_message(message, text=exception.__str__())
+
+

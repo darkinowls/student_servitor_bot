@@ -1,8 +1,8 @@
 from pyrogram import filters
-from pyrogram.types import InlineKeyboardButton, ReplyKeyboardMarkup
-from pyrogram.types import InlineKeyboardMarkup
+from pyrogram.enums import ParseMode
 from pyrogram.types import Message, CallbackQuery
 
+from bot.constants.help_alerts import HELP, HELP_TITLE
 from bot.decorators.on_message import on_message
 from bot.decorators.on_typed_message import on_typed_message
 from bot.helpers.command_helper import get_single_text_parameter
@@ -15,6 +15,11 @@ class BasicModule(SimpleClient):
 
     def __init__(self, bot_name, api_id, api_hash, bot_token):
         super().__init__(bot_name=bot_name, api_id=api_id, api_hash=api_hash, bot_token=bot_token)
+
+        @self.on_callback_query(filters.regex(r"^" + HELP_TITLE))
+        async def show_helpful_alert(_, callback_query: CallbackQuery):
+            helpful_message: str = callback_query.data[len(HELP_TITLE):]
+            await callback_query.answer(helpful_message, show_alert=True)
 
         @on_message(self, filters.command("json"))
         async def get_json_from_message(_, message: Message):
@@ -44,7 +49,9 @@ class BasicModule(SimpleClient):
 
         @on_typed_message(self, filters.command("week"))
         async def print_week_number(_, message: Message):
-
             await self.send_reply_message(message,
                                           text=f"Today is the {get_current_week_number_formatted()} week")
 
+        @on_typed_message(self, filters.command(["start", "help"]))
+        async def send_help_message(_, message: Message):
+            await message.reply_text(HELP, parse_mode=ParseMode.HTML)

@@ -8,7 +8,7 @@ from bot.helpers.queue_helper import get_parameters_list
 def get_gmail_address_and_app_password_from_parameters(text: str) -> tuple[str, str]:
     index_list: list[str] = get_parameters_list(text)
     if len(index_list) != 2:
-        raise TelegramBotException("Have to be 2 parameters: email address and password")
+        raise TelegramBotException("Have to be 2 parameters: email address and App password")
     gmail_address: str = index_list[0]
     if not re.match(GMAIL_REGEX, gmail_address):
         raise TelegramBotException(f"The {gmail_address} email address is a not gmail address")

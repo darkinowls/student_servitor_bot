@@ -52,7 +52,7 @@ class ScheduleModule(ScheduledClient):
         self.__add_previous_sessions_to_scheduler()
         register_connection_switchers(self, SCHEDULE)
 
-        @on_typed_message(self, filters.command(SCHEDULE))
+        @on_typed_message(self, filters.command(SCHEDULE) & filters.document)
         async def set_gmail_connection(_, message: Message):
             check_document_is_json(message.document)
             filepath: str = await self.download_media(message,
@@ -65,11 +65,13 @@ class ScheduleModule(ScheduledClient):
                                       SCHEDULE, lessons)
             await self.send_success_reply_message(message, "Schedule module is successfully set!")
 
-        @on_typed_message(self, filters.command("my_schedule"))
+        @on_typed_message(self, filters.command(SCHEDULE))
         async def send_schedule_file(_, message: Message):
             schedule = get_schedule_by_chat_id(message.chat.id)
             if schedule is None:
                 await self.send_reply_document(message, "schedule.example.json")
-                raise TelegramBotException("You have not set a schedule yet. Here is an example above.")
+                raise TelegramBotException("You have not set a schedule yet. Here is an example above.\n"
+                                           "To set a connection, use the command and a json file:\n"
+                                           "/schedule [schedule.json]")
             filepath: str = create_tmp_json_file("my_schedule", message.chat.id, json.dumps(schedule))
             await self.send_reply_document(message, filepath)
