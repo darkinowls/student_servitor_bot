@@ -6,6 +6,7 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from bot import database
 from bot.constants.database import CHAT_ID, APP_PASSWORD, GMAIL_ADDRESS, MODULE_IS_ON
 from bot.constants.gmail import GMAIL, INTERVAL_SECS_GMAIL
+from bot.constants.help_alerts import TURN_TITLE
 from bot.database import get_gmail_address_by_chat_id
 from bot.decorators.on_typed_message import on_typed_message
 from bot.email.gmail_client import GmailClient
@@ -38,22 +39,29 @@ class GmailModule(ScheduledClient):
         return self.scheduler
 
     def __init__(self, bot_name, api_id, api_hash, bot_token):
+        self.reply_markup = InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton("on", callback_data=TURN_TITLE + GMAIL + "on"),
+                    InlineKeyboardButton("off", callback_data=TURN_TITLE + GMAIL + "off")
+                ]
+            ]
+        )
         super().__init__(bot_name, api_id, api_hash, bot_token)
-        INTERVAL_SECS_GMAIL = 10
         self.__add_previous_sessions_to_scheduler()
         register_connection_switchers(self, GMAIL)
 
-
         @on_typed_message(self, filters.regex(GMAIL + r"\s*" + r"$"))
-        async def send_schedule_file(_, message: Message):
+        async def send_my_gmail(_, message: Message):
             gmail_address: str = get_gmail_address_by_chat_id(message.chat.id)
             if gmail_address is None:
                 raise TelegramBotException("You have not set a gmail connection yet.\n"
                                            "To set a connection, use the command with gmail app password:\n"
                                            "/gmail [gmail] [app-pass]"
                                            )
-            await self.send_turnable_message(message,
-                                          "Your current gmail address is " + gmail_address)
+            await self.send_reply_message(message,
+                                          "Your current gmail address is " + gmail_address,
+                                          self.reply_markup)
 
         @on_typed_message(self, filters.command(GMAIL))
         async def set_gmail_connection(_, message: Message):

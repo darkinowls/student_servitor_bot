@@ -3,11 +3,12 @@ import json
 from apscheduler.job import Job
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pyrogram import filters
-from pyrogram.types import Message
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot import database
 from bot.constants.database import CHAT_ID, SCHEDULE, MODULE_IS_ON
 from bot.constants.general import END_LINE
+from bot.constants.help_alerts import TURN_TITLE
 from bot.constants.schedule import INTERVAL_SECS_SCHEDULE
 from bot.database import get_schedule_by_chat_id
 from bot.database.lesson import Lesson
@@ -48,6 +49,14 @@ class ScheduleModule(ScheduledClient):
         return self.scheduler
 
     def __init__(self, bot_name, api_id, api_hash, bot_token):
+        self.reply_markup = InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton("on", callback_data=TURN_TITLE + SCHEDULE + "on"),
+                    InlineKeyboardButton("off", callback_data=TURN_TITLE + SCHEDULE + "off")
+                ]
+            ]
+        )
         super().__init__(bot_name, api_id, api_hash, bot_token)
         self.__add_previous_sessions_to_scheduler()
         register_connection_switchers(self, SCHEDULE)
@@ -63,16 +72,15 @@ class ScheduleModule(ScheduledClient):
             self.add_job_to_scheduler(message.chat.id, INTERVAL_SECS_SCHEDULE,
                                       self.__send_on_schedule,
                                       SCHEDULE, lessons)
-            await self.send_success_reply_message(message,
-                                                  "Schedule module is successfully set!")
+            await self.send_success_reply_message(message, "Schedule module is successfully set!", self.reply_markup)
 
         @on_typed_message(self, filters.command(SCHEDULE))
         async def send_schedule_file(_, message: Message):
             schedule = get_schedule_by_chat_id(message.chat.id)
             if schedule is None:
-                await self.send_turnable_document(message, "schedule.example.json")
+                await self.send_reply_document(message, "schedule.example.json")
                 raise TelegramBotException("You have not set a schedule yet. Here is an example above.\n"
                                            "To set a connection, use the command and a json file:\n"
                                            "/schedule [schedule.json]")
             filepath: str = create_tmp_json_file("my_schedule", message.chat.id, json.dumps(schedule))
-            await self.send_turnable_document(message, filepath)
+            await self.send_reply_document(message, filepath, self.reply_markup)

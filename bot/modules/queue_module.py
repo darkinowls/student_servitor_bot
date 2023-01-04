@@ -32,7 +32,7 @@ class QueueModule(SimpleClient):
             index_list: list[int] = get_index_list_from_parameters(message.text)
             record_dict, header = get_order_record_dict_and_header(message.reply_to_message.text)
             record_dict: OrderedDict = remove_records_by_indexes(index_list, record_dict)
-            await self.__edit_student_queue(record_dict, header, incoming_message=message.reply_to_message)
+            await self.__edit_student_queue(record_dict, header, incoming_message=message)
 
         @on_typed_message(self, filters.command("swap") & reply_to_my_list_message_filter)
         async def swap_by_index(_, message: Message):
