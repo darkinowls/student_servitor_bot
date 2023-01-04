@@ -33,11 +33,6 @@ class ScheduledClient(SimpleClient):
 
         self.scheduler.start()
 
-    async def send_success_reply_message(self, incoming_message: Message, text: str,
-                                         reply_markup: InlineKeyboardMarkup) -> Message:
+    async def send_success_reply_message(self, incoming_message: Message, text: str, reply_markup: InlineKeyboardMarkup) -> Message:
         return await super().send_reply_message(incoming_message, CHECK_BOX_EMOJI + WHITESPACE + text,
                                                 reply_markup)
-
-    # async def send_stop_reply_message(self, incoming_message: Message, text: str, reply_markup) -> Message:
-    #     return await super().send_reply_message(incoming_message, CHECK_BOX_EMOJI + WHITESPACE + text,
-    #                                             reply_markup)

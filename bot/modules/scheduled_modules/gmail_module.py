@@ -5,6 +5,7 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot import database
 from bot.constants.database import CHAT_ID, APP_PASSWORD, GMAIL_ADDRESS, MODULE_IS_ON
+from bot.constants.general import WHITESPACE
 from bot.constants.gmail import GMAIL, INTERVAL_SECS_GMAIL
 from bot.constants.help_alerts import TURN_TITLE
 from bot.database import get_gmail_address_by_chat_id
@@ -39,11 +40,11 @@ class GmailModule(ScheduledClient):
         return self.scheduler
 
     def __init__(self, bot_name, api_id, api_hash, bot_token):
-        self.reply_markup = InlineKeyboardMarkup(
+        self.__reply_markup = InlineKeyboardMarkup(
             [
                 [
-                    InlineKeyboardButton("on", callback_data=TURN_TITLE + GMAIL + "on"),
-                    InlineKeyboardButton("off", callback_data=TURN_TITLE + GMAIL + "off")
+                    InlineKeyboardButton("on" + WHITESPACE + GMAIL, callback_data=GMAIL + "on"),
+                    InlineKeyboardButton("off" + WHITESPACE + GMAIL, callback_data=GMAIL + "off")
                 ]
             ]
         )
@@ -51,7 +52,18 @@ class GmailModule(ScheduledClient):
         self.__add_previous_sessions_to_scheduler()
         register_connection_switchers(self, GMAIL)
 
-        @on_typed_message(self, filters.regex(GMAIL + r"\s*" + r"$"))
+        @on_typed_message(self, filters.regex("^/" + GMAIL + r"\s.*"))
+        async def set_gmail_connection(_, message: Message):
+            gmail_address, app_password = get_gmail_address_and_app_password_from_parameters(message.text)
+            gmail_client: GmailClient = GmailClient(gmail_address, app_password)
+            database.upsert_gmail(message.chat.id, gmail_address, app_password)
+            self.add_job_to_scheduler(message.chat.id, INTERVAL_SECS_GMAIL, self.__send_on_schedule,
+                                      GMAIL, gmail_client)
+            await self.send_success_reply_message(message,
+                                                  "Email auth is set successfully! You may delete the message",
+                                                  self.__reply_markup)
+
+        @on_typed_message(self, filters.command(GMAIL))
         async def send_my_gmail(_, message: Message):
             gmail_address: str = get_gmail_address_by_chat_id(message.chat.id)
             if gmail_address is None:
@@ -61,14 +73,4 @@ class GmailModule(ScheduledClient):
                                            )
             await self.send_reply_message(message,
                                           "Your current gmail address is " + gmail_address,
-                                          self.reply_markup)
-
-        @on_typed_message(self, filters.command(GMAIL))
-        async def set_gmail_connection(_, message: Message):
-            gmail_address, app_password = get_gmail_address_and_app_password_from_parameters(message.text)
-            gmail_client: GmailClient = GmailClient(gmail_address, app_password)
-            database.upsert_gmail(message.chat.id, gmail_address, app_password)
-            self.add_job_to_scheduler(message.chat.id, INTERVAL_SECS_GMAIL, self.__send_on_schedule,
-                                      GMAIL, gmail_client)
-            await self.send_success_reply_message(message,
-                                                  "Email auth is set successfully! You may delete the message")
+                                          self.__reply_markup)
