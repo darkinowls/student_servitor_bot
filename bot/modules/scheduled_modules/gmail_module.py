@@ -1,19 +1,17 @@
 from apscheduler.job import Job
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pyrogram import filters
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.types import Message
 
 from bot import database
 from bot.constants.database import CHAT_ID, APP_PASSWORD, GMAIL_ADDRESS, MODULE_IS_ON
-from bot.constants.general import WHITESPACE
 from bot.constants.gmail import GMAIL, INTERVAL_SECS_GMAIL
-from bot.constants.help_alerts import TURN_TITLE
-from bot.database import get_gmail_address_by_chat_id
+from bot.database import get_gmail_address_by_chat_id, get_gmail_address_and_module_is_on_by_chat_id
 from bot.decorators.on_typed_message import on_typed_message
 from bot.email.gmail_client import GmailClient
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.gmail_helper import get_gmail_address_and_app_password_from_parameters
-from bot.helpers.scheduler_helper import register_connection_switchers
+from bot.helpers.scheduler_helper import register_connection_switchers, create_keyboard_markup, get_turn_str
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 
@@ -40,14 +38,6 @@ class GmailModule(ScheduledClient):
         return self.scheduler
 
     def __init__(self, bot_name, api_id, api_hash, bot_token):
-        self.__reply_markup = InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton("on" + WHITESPACE + GMAIL, callback_data=GMAIL + "on"),
-                    InlineKeyboardButton("off" + WHITESPACE + GMAIL, callback_data=GMAIL + "off")
-                ]
-            ]
-        )
         super().__init__(bot_name, api_id, api_hash, bot_token)
         self.__add_previous_sessions_to_scheduler()
         register_connection_switchers(self, GMAIL)
@@ -61,16 +51,16 @@ class GmailModule(ScheduledClient):
                                       GMAIL, gmail_client)
             await self.send_success_reply_message(message,
                                                   "Email auth is set successfully! You may delete the message",
-                                                  self.__reply_markup)
+                                                  create_keyboard_markup(GMAIL, "off"))
 
         @on_typed_message(self, filters.command(GMAIL))
         async def send_my_gmail(_, message: Message):
-            gmail_address: str = get_gmail_address_by_chat_id(message.chat.id)
-            if gmail_address is None:
+            gmail_address_str, module_is_on = get_gmail_address_and_module_is_on_by_chat_id(message.chat.id)
+            if gmail_address_str is None:
                 raise TelegramBotException("You have not set a gmail connection yet.\n"
                                            "To set a connection, use the command with gmail app password:\n"
                                            "/gmail [gmail] [app-pass]"
                                            )
             await self.send_reply_message(message,
-                                          "Your current gmail address is " + gmail_address,
-                                          self.__reply_markup)
+                                          "Your current gmail address is " + gmail_address_str,
+                                          create_keyboard_markup(GMAIL, get_turn_str(not module_is_on)))

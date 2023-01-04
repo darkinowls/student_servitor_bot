@@ -1,10 +1,10 @@
 from apscheduler.job import Job
 from pyrogram import filters
-from pyrogram.types import Message
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot import database
 from bot.constants.emoji import PLAY_EMOJI, PAUSE_EMOJI
-from bot.constants.general import WHITESPACE
+from bot.constants.general import WHITESPACE, UNDERLINE
 from bot.decorators.on_callback_query import on_callback_query
 from bot.decorators.on_typed_message import on_typed_message
 from bot.exceptions.telegram_bot_exception import TelegramBotException
@@ -26,23 +26,47 @@ def register_connection_switchers(client: ScheduledClient, module_name: str):
 
     @on_callback_query(client, filters.regex(r"^" + module_name))
     async def switch_connection_query(_, message: Message):
-        turn_str: str = message.text[-2:]
-        await switch_connection(client, message, module_name, True if turn_str == "on" else False)
+        turn_str: str = message.text.split(UNDERLINE, 1)[1]
+        await switch_connection(client, message, module_name, get_turn_bool(turn_str))
+        await message.edit_reply_markup(create_keyboard_markup(module_name, reverse_turn_str(turn_str)))
 
 
-def __register_connection_switcher(client: ScheduledClient, module_name: str, turn_on: bool):
-    @on_typed_message(client, filters.command("on" if turn_on else "off" + "_" + module_name))
+def __register_connection_switcher(client: ScheduledClient, module_name: str, turn_bool: bool):
+    @on_typed_message(client, filters.command(get_turn_str(turn_bool) + "_" + module_name))
     async def func(_, message):
-        await switch_connection(client, message, module_name, turn_on)
+        await switch_connection(client, message, module_name, turn_bool)
 
 
-async def switch_connection(client: ScheduledClient, message, module_name, turn_on):
+async def switch_connection(client: ScheduledClient, message, module_name, turn_bool):
     job: Job | None = client.scheduler.get_job(client.get_unique_job_id(message.chat.id, module_name))
-    check_job_state(job, module_name, must_job_run=not turn_on)
-    database.update_gmail_module(message.chat.id, module_is_on=turn_on)
-    if turn_on:
+    check_job_state(job, module_name, must_job_run=not turn_bool)
+    database.update_gmail_module(message.chat.id, module_is_on=turn_bool)
+    if turn_bool:
         job.resume()
         await client.send_reply_message(message, PLAY_EMOJI + WHITESPACE + module_name + " module is on")
     else:
         job.pause()
         await client.send_reply_message(message, PAUSE_EMOJI + WHITESPACE + module_name + " module is off")
+
+
+def create_keyboard_markup(module_name: str, turn_str: str):
+    return InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton(turn_str + WHITESPACE + module_name,
+                                     callback_data=module_name + UNDERLINE + turn_str),
+            ]
+        ]
+    )
+
+
+def reverse_turn_str(turn_str) -> str:
+    return "on" if turn_str == "off" else "off"
+
+
+def get_turn_str(turn_on: bool) -> str:
+    return "on" if turn_on else "off"
+
+
+def get_turn_bool(turn_str: str) -> bool:
+    return True if turn_str == "on" else False

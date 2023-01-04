@@ -7,17 +7,17 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 from bot import database
 from bot.constants.database import CHAT_ID, SCHEDULE, MODULE_IS_ON
-from bot.constants.general import END_LINE, WHITESPACE
+from bot.constants.general import END_LINE, WHITESPACE, UNDERLINE
 from bot.constants.help_alerts import TURN_TITLE
 from bot.constants.schedule import INTERVAL_SECS_SCHEDULE
-from bot.database import get_schedule_by_chat_id
+from bot.database import get_schedule_and_module_is_on_by_chat_id
 from bot.database.lesson import Lesson
 from bot.decorators.on_typed_message import on_typed_message
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 from bot.helpers.datetime_helper import get_current_week_number, get_current_time_str, \
     get_current_day_str
 from bot.helpers.json_helper import check_document_is_json, load_schedule_json_from_file, get_lessons_from_schedule_json
-from bot.helpers.scheduler_helper import register_connection_switchers
+from bot.helpers.scheduler_helper import register_connection_switchers, create_keyboard_markup, get_turn_str
 from bot.helpers.tmp_helper import create_tmp_json_filepath, create_tmp_json_file
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
@@ -49,15 +49,6 @@ class ScheduleModule(ScheduledClient):
         return self.scheduler
 
     def __init__(self, bot_name, api_id, api_hash, bot_token):
-        self.__reply_markup = InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton("on" + WHITESPACE + SCHEDULE, callback_data=SCHEDULE + "on"),
-                    InlineKeyboardButton("off"  + WHITESPACE + SCHEDULE, callback_data=SCHEDULE + "off")
-                ]
-            ]
-        )
-
         super().__init__(bot_name, api_id, api_hash, bot_token)
         self.__add_previous_sessions_to_scheduler()
         register_connection_switchers(self, SCHEDULE)
@@ -73,15 +64,17 @@ class ScheduleModule(ScheduledClient):
             self.add_job_to_scheduler(message.chat.id, INTERVAL_SECS_SCHEDULE,
                                       self.__send_on_schedule,
                                       SCHEDULE, lessons)
-            await self.send_success_reply_message(message, "Schedule module is successfully set!", self.__reply_markup)
+            await self.send_success_reply_message(message, "Schedule module is successfully set!",
+                                                  create_keyboard_markup(SCHEDULE, "off"))
 
         @on_typed_message(self, filters.command(SCHEDULE))
         async def send_schedule_file(_, message: Message):
-            schedule = get_schedule_by_chat_id(message.chat.id)
+            schedule, module_is_on = get_schedule_and_module_is_on_by_chat_id(message.chat.id)
             if schedule is None:
                 await self.send_reply_document(message, "schedule.example.json")
                 raise TelegramBotException("You have not set a schedule yet. Here is an example above.\n"
                                            "To set a connection, use the command and a json file:\n"
                                            "/schedule [schedule.json]")
             filepath: str = create_tmp_json_file("my_schedule", message.chat.id, json.dumps(schedule))
-            await self.send_reply_document(message, filepath, self.__reply_markup)
+            await self.send_reply_document(message, filepath,
+                                           create_keyboard_markup(SCHEDULE, get_turn_str(not module_is_on)))

@@ -4,6 +4,7 @@ COLON = ": "
 EMPTY_STR = ""
 END_LINE = "\n"
 WHITESPACE = " "
+UNDERLINE = "_"
 
 TMP_FOLDER = ".tmp/"
 INTERVAL = "interval"

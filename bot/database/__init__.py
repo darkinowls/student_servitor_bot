@@ -27,7 +27,8 @@ def update_gmail_module(chat_id: int, module_is_on: bool) -> bool:
 
 def update_schedule_module(chat_id: int, module_is_on: bool) -> bool:
     return __get_schedule_sessions_collection().update_one({CHAT_ID: chat_id},
-                                                           {SET_COMMAND: {MODULE_IS_ON: module_is_on}}).matched_count == 1
+                                                           {SET_COMMAND: {
+                                                               MODULE_IS_ON: module_is_on}}).matched_count == 1
 
 
 def upsert_gmail(chat_id: int, gmail_address: str, app_password: str, module_is_on: bool = True) -> bool:
@@ -57,9 +58,17 @@ def get_all_schedule_sessions() -> Cursor:
     return __get_schedule_sessions_collection().find()
 
 
-def get_schedule_by_chat_id(chat_id: int) -> str | None:
-    return __get_schedule_sessions_collection().find_one({CHAT_ID: chat_id}, {SCHEDULE: 1, ID: 0}).get(SCHEDULE)
+def get_schedule_and_module_is_on_by_chat_id(chat_id: int) -> tuple[str | None, bool | None]:
+    result: dict = __get_schedule_sessions_collection().find_one(
+        {CHAT_ID: chat_id},
+        {SCHEDULE: 1, MODULE_IS_ON: 1, ID: 0}
+    )
+    return result.get(SCHEDULE), result.get(MODULE_IS_ON)
 
-def get_gmail_address_by_chat_id(chat_id: int) -> str | None:
-    return __get_gmail_sessions_collection().find_one({CHAT_ID: chat_id}, {GMAIL_ADDRESS: 1, ID: 0}).get(GMAIL_ADDRESS)
 
+def get_gmail_address_and_module_is_on_by_chat_id(chat_id: int) -> tuple[str | None, bool | None]:
+    result: dict = __get_gmail_sessions_collection().find_one(
+        {CHAT_ID: chat_id},
+        {GMAIL_ADDRESS: 1, MODULE_IS_ON: 1, ID: 0}
+    )
+    return result.get(GMAIL_ADDRESS), result.get(MODULE_IS_ON)
