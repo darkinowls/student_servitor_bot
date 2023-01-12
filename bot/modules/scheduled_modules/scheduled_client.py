@@ -25,12 +25,6 @@ class ScheduledClient(SimpleClient):
     def __init__(self, api_id, api_hash, bot_token):
         super().__init__(api_id, api_hash, bot_token)
         self.scheduler = AsyncIOScheduler()
-        self.add_job_to_scheduler(0,
-                                  INTERVAL_SECS_GARBAGE_COLLECTOR,
-                                  delete_old_tmp_files,
-                                  FILE_GARBAGE_COLLECTOR,
-                                  INTERVAL_SECS_GARBAGE_COLLECTOR)
-
         self.scheduler.start()
 
     async def send_success_reply_message(self, incoming_message: Message, text: str, reply_markup: InlineKeyboardMarkup) -> Message:

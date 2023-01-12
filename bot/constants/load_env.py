@@ -12,4 +12,4 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 CONNECTION_STRING = os.getenv("CONNECTION_STRING")
 
 if None in [API_ID, API_HASH, BOT_TOKEN, CONNECTION_STRING]:
-    raise EnvException("Set .env file with constants")
+    raise EnvException("Set .env file with constants like it is in .env.example")
