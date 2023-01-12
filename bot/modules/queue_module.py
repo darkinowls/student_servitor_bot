@@ -22,8 +22,8 @@ class QueueModule(SimpleClient):
         queue_text: str = create_queue_text(record_dict, header)
         await self.edit_replied_message(incoming_message, queue_text, reply_markup=self.__help_markup)
 
-    def __init__(self, bot_name, api_id, api_hash, bot_token):
-        super().__init__(bot_name, api_id, api_hash, bot_token)
+    def __init__(self, api_id, api_hash, bot_token):
+        super().__init__(api_id, api_hash, bot_token)
         reply_to_my_list_message_filter: Filter = filters.create(is_reply_to_my_queue_message)
         self.__help_markup = create_queue_help_markup()
 

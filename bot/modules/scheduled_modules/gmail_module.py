@@ -6,7 +6,7 @@ from pyrogram.types import Message
 from bot import database
 from bot.constants.database import CHAT_ID, APP_PASSWORD, GMAIL_ADDRESS, MODULE_IS_ON
 from bot.constants.gmail import GMAIL, INTERVAL_SECS_GMAIL
-from bot.database import get_gmail_address_by_chat_id, get_gmail_address_and_module_is_on_by_chat_id
+from bot.database import get_gmail_address_and_module_is_on_by_chat_id
 from bot.decorators.on_typed_message import on_typed_message
 from bot.email.gmail_client import GmailClient
 from bot.exceptions.telegram_bot_exception import TelegramBotException
@@ -37,8 +37,8 @@ class GmailModule(ScheduledClient):
                 job.pause()
         return self.scheduler
 
-    def __init__(self, bot_name, api_id, api_hash, bot_token):
-        super().__init__(bot_name, api_id, api_hash, bot_token)
+    def __init__(self, api_id, api_hash, bot_token):
+        super().__init__(api_id, api_hash, bot_token)
         self.__add_previous_sessions_to_scheduler()
         register_connection_switchers(self, GMAIL)
 

@@ -10,8 +10,8 @@ from bot.exceptions.telegram_bot_exception import TelegramBotException
 
 class SimpleClient(Client):
 
-    def __init__(self, bot_name, api_id, api_hash, bot_token):
-        super().__init__(name=bot_name, api_id=api_id, api_hash=api_hash, bot_token=bot_token)
+    def __init__(self, api_id, api_hash, bot_token):
+        super().__init__(name="TELEGRAM BOT", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
     @staticmethod
     async def send_reply_message(incoming_message: Message, text: str,

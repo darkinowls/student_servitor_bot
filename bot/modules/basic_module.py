@@ -13,10 +13,8 @@ from bot.modules.simple_client import SimpleClient
 
 class BasicModule(SimpleClient):
 
-    def __init__(self, bot_name, api_id, api_hash, bot_token):
-        super().__init__(bot_name=bot_name, api_id=api_id, api_hash=api_hash, bot_token=bot_token)
-
-
+    def __init__(self, api_id, api_hash, bot_token):
+        super().__init__(api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
         @on_message(self, filters.command("json"))
         async def get_json_from_message(_, message: Message):
@@ -34,7 +32,7 @@ class BasicModule(SimpleClient):
             """
             Everyone can say hello to Bot!
             """
-            await self.send_reply_message(message, bot_name + " welcomes you!")
+            await self.send_reply_message(message, (await self.get_me()).first_name + " welcomes you!")
 
         @on_typed_message(self, filters.reply & filters.command("copy"))
         async def set_message_text(_, message: Message):

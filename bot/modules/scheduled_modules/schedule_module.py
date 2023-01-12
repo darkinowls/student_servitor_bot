@@ -48,8 +48,8 @@ class ScheduleModule(ScheduledClient):
                 job.pause()
         return self.scheduler
 
-    def __init__(self, bot_name, api_id, api_hash, bot_token):
-        super().__init__(bot_name, api_id, api_hash, bot_token)
+    def __init__(self, api_id, api_hash, bot_token):
+        super().__init__(api_id, api_hash, bot_token)
         self.__add_previous_sessions_to_scheduler()
         register_connection_switchers(self, SCHEDULE)
 

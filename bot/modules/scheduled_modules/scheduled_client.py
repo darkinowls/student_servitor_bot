@@ -22,8 +22,8 @@ class ScheduledClient(SimpleClient):
                                       replace_existing=True,
                                       args=[args[0], chat_id])
 
-    def __init__(self, bot_name, api_id, api_hash, bot_token):
-        super().__init__(bot_name, api_id, api_hash, bot_token)
+    def __init__(self, api_id, api_hash, bot_token):
+        super().__init__(api_id, api_hash, bot_token)
         self.scheduler = AsyncIOScheduler()
         self.add_job_to_scheduler(0,
                                   INTERVAL_SECS_GARBAGE_COLLECTOR,
