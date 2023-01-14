@@ -64,7 +64,7 @@ class QueueModule(SimpleClient):
             record_index, record_value = create_record(message.text)
             record_dict, header = get_order_record_dict_and_header(message.reply_to_message.text)
 
-            if len(record_dict) >= 256:
+            if len(record_dict) > 256:
                 raise TelegramBotException("Queue is full. 256 records is maximum")
 
             # if queue is empty

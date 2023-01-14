@@ -3,8 +3,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pyrogram.types import Message, InlineKeyboardMarkup
 
 from bot.constants.emoji import CHECK_BOX_EMOJI
-from bot.constants.general import FILE_GARBAGE_COLLECTOR, INTERVAL_SECS_GARBAGE_COLLECTOR, INTERVAL, WHITESPACE
-from bot.helpers.tmp_helper import delete_old_tmp_files
+from bot.constants.general import INTERVAL, WHITESPACE
 from bot.modules.simple_client import SimpleClient
 
 

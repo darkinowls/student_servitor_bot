@@ -16,6 +16,7 @@ def get_parameters_list(text: str) -> list[str]:
             continue
         __check_param_size(parameter)
         parameters_list.append(parameter)
+    __check_param_list_size(parameters_list)
     return parameters_list
 
 
@@ -41,3 +42,8 @@ def get_single_text_parameter(text: str, should_exist: bool = True) -> str:
 def __check_param_size(parameter: str):
     if len(parameter) > 100:
         raise TelegramBotException("Too big parameter")
+
+
+def __check_param_list_size(param_list: list[str]):
+    if len(param_list) > 256:
+        raise TelegramBotException("Too big parameter list")

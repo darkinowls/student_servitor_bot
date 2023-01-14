@@ -9,7 +9,7 @@ API_ID = os.getenv('API_ID')
 API_HASH = os.getenv('API_HASH')
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
-CONNECTION_STRING = os.getenv("CONNECTION_STRING")
+MONGO_CONNECTION_STRING = os.getenv("MONGO_CONNECTION_STRING")
 
-if None in [API_ID, API_HASH, BOT_TOKEN, CONNECTION_STRING]:
+if None in [API_ID, API_HASH, BOT_TOKEN, MONGO_CONNECTION_STRING]:
     raise EnvException("Set .env file with constants like it is in .env.example")

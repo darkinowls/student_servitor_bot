@@ -3,12 +3,11 @@ import json
 from apscheduler.job import Job
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pyrogram import filters
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.types import Message
 
 from bot import database
 from bot.constants.database import CHAT_ID, SCHEDULE, MODULE_IS_ON
-from bot.constants.general import END_LINE, WHITESPACE, UNDERLINE
-from bot.constants.help_alerts import TURN_TITLE
+from bot.constants.general import END_LINE
 from bot.constants.schedule import INTERVAL_SECS_SCHEDULE
 from bot.database import get_schedule_and_module_is_on_by_chat_id
 from bot.database.lesson import Lesson

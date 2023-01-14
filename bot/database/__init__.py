@@ -5,11 +5,11 @@ from pymongo.database import Database
 
 from bot.constants.database import CHAT_ID, GMAIL_ADDRESS, APP_PASSWORD, MODULE_IS_ON, SCHEDULE, SET_COMMAND, ID, \
     GMAIL_SESSIONS, STUDENT_BOT, SCHEDULE_SESSIONS
-from bot.constants.load_env import CONNECTION_STRING
+from bot.constants.load_env import MONGO_CONNECTION_STRING
 
 
 def __get_database() -> Database:
-    return MongoClient(CONNECTION_STRING).get_database(STUDENT_BOT)
+    return MongoClient(MONGO_CONNECTION_STRING).get_database(STUDENT_BOT)
 
 
 def __get_gmail_sessions_collection() -> Collection:
@@ -63,6 +63,8 @@ def get_schedule_and_module_is_on_by_chat_id(chat_id: int) -> tuple[str | None, 
         {CHAT_ID: chat_id},
         {SCHEDULE: 1, MODULE_IS_ON: 1, ID: 0}
     )
+    if result is None:
+        return None, None
     return result.get(SCHEDULE), result.get(MODULE_IS_ON)
 
 
@@ -71,4 +73,6 @@ def get_gmail_address_and_module_is_on_by_chat_id(chat_id: int) -> tuple[str | N
         {CHAT_ID: chat_id},
         {GMAIL_ADDRESS: 1, MODULE_IS_ON: 1, ID: 0}
     )
+    if result is None:
+        return None, None
     return result.get(GMAIL_ADDRESS), result.get(MODULE_IS_ON)

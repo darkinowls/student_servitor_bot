@@ -9,10 +9,10 @@ class Lesson:
 
     def __init__(self, json: dict):
         self.__json = json
-        self.name : str = self.__get_from_json(NAME)
-        self.day : str = self.__parse_day(self.__get_from_json(DAY))
-        self.time : str = self.__parse_time(self.__get_from_json(TIME))
-        self.week : int = self.__parse_week(self.__get_from_json(WEEK))
+        self.name: str = self.__get_from_json(NAME)
+        self.day: str = self.__parse_day(self.__get_from_json(DAY))
+        self.time: str = self.__parse_time(self.__get_from_json(TIME))
+        self.week: int = self.__parse_week(self.__get_from_json(WEEK))
         self.__link: str | None = None
         if LINK in self.__json.keys():
             self.__link = self.__parse_link(self.__get_from_json(LINK))
