@@ -25,9 +25,9 @@ gmail_sessions and schedule_sessions
         * [An example of json schedule](#an-example-of-json-schedule)
         * [Schedule module set up with images](#schedule-module-set-up-with-images)
 2. [How to install a bot on a server](#installation-on-a-server) (recommended for deployment engineer)
-    1. Get Telegram API keys
-    2. Get MongoDB Atlas Database
-    3. Student Servitor Bot set up
+    1. [Get Telegram API keys](#telegram-api-keys)
+    2. [Get MongoDB Atlas Database](#mongodb-atlas)
+    3. [Student Servitor Bot set up](#student-servitor-bot-set-up)
 
 ---
 
