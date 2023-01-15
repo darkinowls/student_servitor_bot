@@ -2,7 +2,17 @@
 
 ###### My diploma work
 
+### Overview
+
 The Telegram bot, which is created to support students.
+
+Telegram bot consists of 4 modules. Each module has its own commands and features
+You can click on one of the modules here to see the details:
+
+1. [Queue module](#queue-module)
+2. [Gmail module](#gmail-module)
+3. [Schedule module](#schedule-module)
+4. [Basic module](#basic-module)
 
 It uses MongoDB Atlas as a database to remember all the sessions.
 There are 2 collections of sessions:
@@ -32,14 +42,6 @@ gmail_sessions and schedule_sessions
 ---
 
 ## All the bot commands and their features
-
-Telegram bot consists of 4 modules. Each module has its own commands and features
-You can click on one of the modules here to see the details:
-
-1. [Queue module](#queue-module)
-2. [Gmail module](#gmail-module)
-3. [Schedule module](#schedule-module)
-4. [Basic module](#basic-module)
 
 Let's look at *ALL* the commands in the table below.
 
@@ -262,7 +264,7 @@ Thereby, the messages about lessons will be sent to the group.
 
 #### Schedule module set up with images
 
-Firstly, a json schedule file is required to be created like [this above](#an-example-of-json-schedule-)
+Firstly, a json schedule file is required to be created like [this above](#an-example-of-json-schedule)
 
 ![schedule_json.png](images_for_readme/schedule_json.png)
 

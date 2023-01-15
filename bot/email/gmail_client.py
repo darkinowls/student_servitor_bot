@@ -15,7 +15,9 @@ class GmailClient:
         try:
             self.__imbox = Imbox(IMAP_GMAIL_SERVER, username=email_address, password=password)
         except imaplib.IMAP4.error:
-            raise TelegramBotException('The authentication has been failed. Please check the docs')
+            raise TelegramBotException('The authentication has been failed.\n'
+                                       'Please check the gmail module docs:\n'
+                                       'https://github.com/Darkinowls/student_servitor_bot')
 
     def get_new_messages(self) -> list[str]:
         texts: list[str] = []
