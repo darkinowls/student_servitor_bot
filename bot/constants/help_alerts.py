@@ -1,11 +1,9 @@
 HELP_TITLE = "H"
 
-TURN_TITLE = "T"
-
 SWAP_HELP = HELP_TITLE + "/swap 1 2\n" \
                          "Swaps the replied queue records by indexes"
 
-RM_HELP = HELP_TITLE + "/rm 1 2\n" \
+RM_HELP = HELP_TITLE + "/rm 1 2 .. 5\n" \
                        "Deletes the replied queue records by indexes"
 
 HEADER_HELP = HELP_TITLE + "/header Lab 5 Math\n" \
@@ -16,7 +14,7 @@ ADD_HELP = HELP_TITLE + "1 Arthur Jotaro\n" \
 
 HELP = \
     """
-<pre>Commands:
+Commands:
     
 /queue - Creates a queue
 
@@ -35,5 +33,4 @@ HELP = \
 /week - Reports the current week number
 
 /help - Sends the message with commands
-</pre>
     """

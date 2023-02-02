@@ -2,7 +2,7 @@ import re
 
 from bot.constants.regex import LINK_REGEX, TIME_REGEX
 from bot.constants.schedule import DAYS, WEEKS, NAME, DAY, TIME, WEEK, LINK
-from bot.exceptions.telegram_bot_exception import TelegramBotException
+from bot.exceptions.telegram_bot_error import TelegramBotError
 
 
 class Lesson:
@@ -24,19 +24,19 @@ class Lesson:
         try:
             return self.__json.get(key)
         except KeyError:
-            raise TelegramBotException("No key such as " + key)
+            raise TelegramBotError("No key such as " + key)
 
     @staticmethod
     def __parse_link(link: str) -> str:
         match = re.match(LINK_REGEX, link)
         if match is None:
-            raise TelegramBotException("Link in json is incorrect")
+            raise TelegramBotError("Link in json is incorrect")
         return link
 
     @staticmethod
     def __parse_day(day: str) -> str:
         if day not in DAYS:
-            raise TelegramBotException("Day in json is incorrect")
+            raise TelegramBotError("Day in json is incorrect")
         return day
 
     @staticmethod
@@ -44,14 +44,14 @@ class Lesson:
         try:
             num = int(week)
         except ValueError:
-            raise TelegramBotException("Week in json should be int")
+            raise TelegramBotError("Week in json should be int")
         if num not in WEEKS:
-            raise TelegramBotException("Week in json should be either 1 or 2")
+            raise TelegramBotError("Week in json should be either 1 or 2")
         return num
 
     @staticmethod
     def __parse_time(time: str) -> str:
         match = re.match(TIME_REGEX, time)
         if match is None:
-            raise TelegramBotException("Time in json is incorrect")
+            raise TelegramBotError("Time in json is incorrect")
         return time

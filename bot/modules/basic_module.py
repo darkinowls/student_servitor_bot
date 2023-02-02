@@ -1,8 +1,8 @@
 from pyrogram import filters
 from pyrogram.enums import ParseMode
-from pyrogram.types import Message, CallbackQuery
+from pyrogram.types import Message
 
-from bot.constants.help_alerts import HELP, HELP_TITLE
+from bot.constants.help_alerts import HELP
 from bot.decorators.on_message import on_message
 from bot.decorators.on_typed_message import on_typed_message
 from bot.helpers.command_helper import get_single_text_parameter

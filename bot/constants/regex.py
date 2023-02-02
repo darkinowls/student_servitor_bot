@@ -1,6 +1,8 @@
 GMAIL_REGEX = r"^[a-z0-9](\.?[a-z0-9]){5,}@gmail\.com$"
 
-RECORD_REGEX = r'(\d{1,3})?\.?\s*([a-zA-ZА-ЯҐЄІЇа-яґєії]{3,20}.{,20})'
+RECORD_REGEX = r'(\d{1,})?\.?\s*([a-zA-ZА-ЯҐЄІЇа-яґєії]{1,20}.+)'
+# RECORD_REGEX = r'(\d{1,})?\.?\s*(.{1,100})'
+
 END_LINE_BEHIND_REGEX = r'(?<=\n)'
 END_AHEAD_REGEX = r'(?=\n|$)'
 

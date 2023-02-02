@@ -4,7 +4,7 @@ from imbox import Imbox
 
 from bot.constants.gmail import IMAP_GMAIL_SERVER
 from bot.email.extracted_message import ExtractedMessage
-from bot.exceptions.telegram_bot_exception import TelegramBotException
+from bot.exceptions.telegram_bot_error import TelegramBotError
 
 
 class GmailClient:
@@ -15,7 +15,7 @@ class GmailClient:
         try:
             self.__imbox = Imbox(IMAP_GMAIL_SERVER, username=email_address, password=password)
         except imaplib.IMAP4.error:
-            raise TelegramBotException('The authentication has been failed.\n'
+            raise TelegramBotError('The authentication has been failed.\n'
                                        'Please check the gmail module docs:\n'
                                        'https://github.com/Darkinowls/student_servitor_bot')
 

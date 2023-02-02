@@ -1,4 +1,5 @@
-from bot.exceptions.telegram_bot_exception import TelegramBotException
+from bot.constants.general import WHITESPACE, EMPTY_STR
+from bot.exceptions.telegram_bot_error import TelegramBotError
 
 
 def get_parameters_list(text: str) -> list[str]:
@@ -10,13 +11,12 @@ def get_parameters_list(text: str) -> list[str]:
     :param text: str
     :return: list of params
     """
+    text = get_single_text_parameter(text)
     parameters_list: list[str] = []
-    for parameter in text.split(' ')[1:]:
-        if parameter == '':
+    for parameter in text.split(WHITESPACE):
+        if parameter == EMPTY_STR:
             continue
-        __check_param_size(parameter)
         parameters_list.append(parameter)
-    __check_param_list_size(parameters_list)
     return parameters_list
 
 
@@ -30,20 +30,15 @@ def get_single_text_parameter(text: str, should_exist: bool = True) -> str:
      :return: params
      """
     try:
-        parameter: str = text.strip().split(' ', 1)[1].strip()
-        __check_param_size(parameter)
+        parameter: str = text.strip().split(WHITESPACE, 1)[1].strip()
+        check_param_size(parameter)
         return parameter
     except IndexError:
         if not should_exist:
-            return ''
-        raise TelegramBotException("No parameter")
+            return EMPTY_STR
+        raise TelegramBotError("No parameter")
 
 
-def __check_param_size(parameter: str):
+def check_param_size(parameter: str):
     if len(parameter) > 100:
-        raise TelegramBotException("Too big parameter")
-
-
-def __check_param_list_size(param_list: list[str]):
-    if len(param_list) > 256:
-        raise TelegramBotException("Too big parameter list")
+        raise TelegramBotError("Too big parameter")

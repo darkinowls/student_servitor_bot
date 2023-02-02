@@ -3,6 +3,8 @@ from bot.modules.simple_client import SimpleClient
 
 
 def on_typed_message(self=SimpleClient, filters=None, group: int = 0) -> Callable:
+
+
     def decorator(func):
         @self.on_message(filters, group)
         @self.on_edited_message(filters, group)

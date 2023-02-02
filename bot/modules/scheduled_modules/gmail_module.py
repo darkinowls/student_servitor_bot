@@ -9,7 +9,7 @@ from bot.constants.gmail import GMAIL, INTERVAL_SECS_GMAIL
 from bot.database import get_gmail_address_and_module_is_on_by_chat_id
 from bot.decorators.on_typed_message import on_typed_message
 from bot.email.gmail_client import GmailClient
-from bot.exceptions.telegram_bot_exception import TelegramBotException
+from bot.exceptions.telegram_bot_error import TelegramBotError
 from bot.helpers.gmail_helper import get_gmail_address_and_app_password_from_parameters
 from bot.helpers.scheduler_helper import register_connection_switchers, create_keyboard_markup, get_turn_str
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
@@ -57,10 +57,10 @@ class GmailModule(ScheduledClient):
         async def send_my_gmail(_, message: Message):
             gmail_address_str, module_is_on = get_gmail_address_and_module_is_on_by_chat_id(message.chat.id)
             if gmail_address_str is None:
-                raise TelegramBotException("You have not set a gmail connection yet.\n"
+                raise TelegramBotError("You have not set a gmail connection yet.\n"
                                            "To set a connection, use the command with gmail app password:\n"
                                            "/gmail [gmail] [app-pass]"
-                                           )
+                                       )
             await self.send_reply_message(message,
                                           "Your current gmail address is " + gmail_address_str,
                                           create_keyboard_markup(GMAIL, get_turn_str(not module_is_on)))

@@ -7,17 +7,17 @@ from bot.constants.emoji import PLAY_EMOJI, PAUSE_EMOJI
 from bot.constants.general import WHITESPACE, UNDERLINE
 from bot.decorators.on_callback_query import on_callback_query
 from bot.decorators.on_typed_message import on_typed_message
-from bot.exceptions.telegram_bot_exception import TelegramBotException
+from bot.exceptions.telegram_bot_error import TelegramBotError
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 
 def check_job_state(job: Job, module_name: str, must_job_run: bool):
     if job is None:
-        raise TelegramBotException(module_name + " is not set in this chat")
+        raise TelegramBotError(module_name + " is not set in this chat")
     if job.next_run_time and not must_job_run:
-        raise TelegramBotException(module_name + " module is already on")
+        raise TelegramBotError(module_name + " module is already on")
     if job.next_run_time is None and must_job_run:
-        raise TelegramBotException(module_name + " module is already off")
+        raise TelegramBotError(module_name + " module is already off")
 
 
 def register_connection_switchers(client: ScheduledClient, module_name: str):

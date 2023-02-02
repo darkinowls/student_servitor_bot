@@ -1,4 +1,4 @@
-class EnvException(Exception):
+class EnvError(Exception):
 
     def __init__(self, text):
         self.__text = text

@@ -12,7 +12,7 @@ from bot.constants.schedule import INTERVAL_SECS_SCHEDULE
 from bot.database import get_schedule_and_module_is_on_by_chat_id
 from bot.database.lesson import Lesson
 from bot.decorators.on_typed_message import on_typed_message
-from bot.exceptions.telegram_bot_exception import TelegramBotException
+from bot.exceptions.telegram_bot_error import TelegramBotError
 from bot.helpers.datetime_helper import get_current_week_number, get_current_time_str, \
     get_current_day_str
 from bot.helpers.json_helper import check_document_is_json, load_schedule_json_from_file, get_lessons_from_schedule_json
@@ -39,7 +39,7 @@ class ScheduleModule(ScheduledClient):
         for session in database.get_all_schedule_sessions():
             chat_id = int(session.get(CHAT_ID))
             module_is_on = bool(session.get(MODULE_IS_ON))
-            lessons: list[Lesson] = get_lessons_from_schedule_json(session.get(SCHEDULE))  # it checks and gets lessons
+            lessons: list[Lesson] = get_lessons_from_schedule_json(session.get(SCHEDULE))  # it gets lessons
             job: Job = self.add_job_to_scheduler(chat_id, INTERVAL_SECS_SCHEDULE,
                                                  self.__send_on_schedule,
                                                  SCHEDULE, lessons)
@@ -71,7 +71,7 @@ class ScheduleModule(ScheduledClient):
             schedule, module_is_on = get_schedule_and_module_is_on_by_chat_id(message.chat.id)
             if schedule is None:
                 await self.send_reply_document(message, "schedule.example.json")
-                raise TelegramBotException("You have not set a schedule yet. Here is an example above.\n"
+                raise TelegramBotError("You have not set a schedule yet. Here is an example above.\n"
                                            "To set a connection, use the command and a json file:\n"
                                            "/schedule [schedule.json]")
             filepath: str = create_tmp_json_file("my_schedule", message.chat.id, json.dumps(schedule))
