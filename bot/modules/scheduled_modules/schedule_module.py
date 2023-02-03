@@ -5,17 +5,18 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from pyrogram import filters
 from pyrogram.types import Message
 
-from bot import database
 from bot.constants.database import CHAT_ID, SCHEDULE, MODULE_IS_ON
 from bot.constants.general import END_LINE
 from bot.constants.schedule import INTERVAL_SECS_SCHEDULE
-from bot.database import get_schedule_and_module_is_on_by_chat_id
-from bot.database.lesson import Lesson
+from bot.database.lesson.lesson_parser import parse_lessons_from_schedule_json
+from bot.database.lesson.lesson_retriever import retrieve_lessons_from_schedule_json
+from bot.database.schedule_session import ScheduleSession
+from bot.database.lesson.lesson import Lesson
 from bot.decorators.on_typed_message import on_typed_message
 from bot.exceptions.telegram_bot_error import TelegramBotError
 from bot.helpers.datetime_helper import get_current_week_number, get_current_time_str, \
     get_current_day_str
-from bot.helpers.json_helper import check_document_is_json, load_schedule_json_from_file, get_lessons_from_schedule_json
+from bot.helpers.json_helper import check_document_is_json, load_schedule_json_from_file
 from bot.helpers.scheduler_helper import register_connection_switchers, create_keyboard_markup, get_turn_str
 from bot.helpers.tmp_helper import create_tmp_json_filepath, create_tmp_json_file
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
@@ -31,15 +32,15 @@ class ScheduleModule(ScheduledClient):
         day_str: str = get_current_day_str()
         time_str: str = get_current_time_str()
         for lesson in lessons:
-            if lesson.week == week_num and lesson.day == day_str and lesson.time == time_str:
+            if lesson.get_week() == week_num and lesson.get_day() == day_str and lesson.get_time() == time_str:
                 self.send_message(chat_id=chat_id,
-                                  text=lesson.name + END_LINE + lesson.get_link())
+                                  text=lesson.get_name() + END_LINE + lesson.get_link())
 
-    def __add_previous_sessions_to_scheduler(self) -> AsyncIOScheduler:
-        for session in database.get_all_schedule_sessions():
+    def __add_previous_sessions_to_scheduler(self, schedule_session: ScheduleSession) -> AsyncIOScheduler:
+        for session in schedule_session.get_all_sessions():
             chat_id = int(session.get(CHAT_ID))
             module_is_on = bool(session.get(MODULE_IS_ON))
-            lessons: list[Lesson] = get_lessons_from_schedule_json(session.get(SCHEDULE))  # it gets lessons
+            lessons: list[Lesson] = retrieve_lessons_from_schedule_json(session.get(SCHEDULE))  # it parse and gets lessons
             job: Job = self.add_job_to_scheduler(chat_id, INTERVAL_SECS_SCHEDULE,
                                                  self.__send_on_schedule,
                                                  SCHEDULE, lessons)
@@ -49,8 +50,9 @@ class ScheduleModule(ScheduledClient):
 
     def __init__(self, api_id, api_hash, bot_token):
         super().__init__(api_id, api_hash, bot_token)
-        self.__add_previous_sessions_to_scheduler()
-        register_connection_switchers(self, SCHEDULE)
+        self.__schedule_sessions: ScheduleSession = ScheduleSession()
+        self.__add_previous_sessions_to_scheduler(self.__schedule_sessions)
+        register_connection_switchers(self, SCHEDULE, self.__schedule_sessions)
 
         @on_typed_message(self, filters.command(SCHEDULE) & filters.document)
         async def set_gmail_connection(_, message: Message):
@@ -58,8 +60,8 @@ class ScheduleModule(ScheduledClient):
             filepath: str = await self.download_media(message,
                                                       file_name=create_tmp_json_filepath(SCHEDULE, message.chat.id))
             schedule: list[dict] = load_schedule_json_from_file(filepath)
-            lessons: list[Lesson] = get_lessons_from_schedule_json(schedule)  # it checks and gets lessons
-            database.upsert_schedule(chat_id=message.chat.id, schedule=schedule)
+            lessons: list[Lesson] = parse_lessons_from_schedule_json(schedule)  # it checks and gets lessons
+            self.__schedule_sessions.upsert_session(chat_id=message.chat.id, schedule=schedule)
             self.add_job_to_scheduler(message.chat.id, INTERVAL_SECS_SCHEDULE,
                                       self.__send_on_schedule,
                                       SCHEDULE, lessons)
@@ -68,12 +70,12 @@ class ScheduleModule(ScheduledClient):
 
         @on_typed_message(self, filters.command(SCHEDULE))
         async def send_schedule_file(_, message: Message):
-            schedule, module_is_on = get_schedule_and_module_is_on_by_chat_id(message.chat.id)
+            schedule, module_is_on = self.__schedule_sessions.get_session_and_module_is_on_by_chat_id(message.chat.id)
             if schedule is None:
                 await self.send_reply_document(message, "schedule.example.json")
                 raise TelegramBotError("You have not set a schedule yet. Here is an example above.\n"
-                                           "To set a connection, use the command and a json file:\n"
-                                           "/schedule [schedule.json]")
+                                       "To set a connection, use the command and a json file:\n"
+                                       "/schedule [schedule.json]")
             filepath: str = create_tmp_json_file("my_schedule", message.chat.id, json.dumps(schedule))
             await self.send_reply_document(message, filepath,
                                            create_keyboard_markup(SCHEDULE, get_turn_str(not module_is_on)))

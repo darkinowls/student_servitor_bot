@@ -339,7 +339,7 @@ API_ID=12345678
 API_HASH=12345678906de2fbmage1a3b6e8TYPE4
 BOT_TOKEN=1234567890:AAFUawNMAGELchPtMjmkyMagethXjDBKiu4
 
-MONGO_CONNECTION_STRING=mongodb+srv://user:password@cluster.mongodb.net/?retryWrites=true&w=majority
+MONGO_CONNECTION_STRING=mongodb+srv://user:password@cluster.mongodb.net/student_bot?retryWrites=true&w=majority
 ```
 
 Don't forget to set up venv and activate it:

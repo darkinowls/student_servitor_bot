@@ -24,11 +24,10 @@ class MyTestCase(unittest.TestCase):
         a = "A", "B"
         print(a)
 
-    def test_delete_prev_char(self):
 
-        if '':
-            print("AAAAAAAAAA")
 
+    def test_bool(self):
+        print(True)
 
 
 if __name__ == '__main__':

@@ -8,4 +8,4 @@ ID = "_id"
 
 SCHEDULE_SESSIONS = "schedule_sessions"
 GMAIL_SESSIONS = "gmail_sessions"
-STUDENT_BOT = "student_bot"
+

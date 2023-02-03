@@ -38,7 +38,7 @@ class QueueModule(SimpleClient):
             record_dict: OrderedDict = remove_records_by_indexes(index_list, record_dict)
             await self.__edit_student_queue(record_dict, header, incoming_message=message)
 
-        @on_typed_message(self, filters.command(SWAP) & reply_to_my_list_message_filter)
+        @on_typed_message(self, filters.command(SWAP))
         async def swap_by_index(_, message: Message):
             await check_reply_to_my_queue_message(_, self, message, raiseable=True)
             first, second = get_two_indexes_from_parameters(message.text)
@@ -46,7 +46,7 @@ class QueueModule(SimpleClient):
             record_dict: OrderedDict = swap_records_by_indexes(first, second, record_dict)
             await self.__edit_student_queue(record_dict, header, incoming_message=message)
 
-        @on_typed_message(self, filters.command(HEADER) & reply_to_my_list_message_filter)
+        @on_typed_message(self, filters.command(HEADER))
         async def set_header(_, message: Message):
             await check_reply_to_my_queue_message(_, self, message, raiseable=True)
             new_header: str = SCROLL_EMOJI + ' ' + get_single_text_parameter(message.text)

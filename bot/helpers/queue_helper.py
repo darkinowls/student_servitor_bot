@@ -28,9 +28,9 @@ def create_record(text: str) -> tuple[int | None, str]:
 async def check_reply_to_my_queue_message(_, client: SimpleClient, message: Message, raiseable: bool = False) -> bool:
     error_str: str | None = None
     if message.reply_to_message is None:
-        error_str = "No replied queue"
+        error_str = "Reply a queue"
     elif message.reply_to_message.from_user.username != (await client.get_me()).username:
-        error_str = "Reply a bot queue"
+        error_str = "Reply a BOT queue"
     elif SCROLL_EMOJI not in message.reply_to_message.text:
         error_str = "The bot message is not a queue"
 

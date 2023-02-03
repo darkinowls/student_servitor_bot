@@ -5,6 +5,7 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from bot import database
 from bot.constants.emoji import PLAY_EMOJI, PAUSE_EMOJI
 from bot.constants.general import WHITESPACE, UNDERLINE
+from bot.database.session import Session
 from bot.decorators.on_callback_query import on_callback_query
 from bot.decorators.on_typed_message import on_typed_message
 from bot.exceptions.telegram_bot_error import TelegramBotError
@@ -20,27 +21,28 @@ def check_job_state(job: Job, module_name: str, must_job_run: bool):
         raise TelegramBotError(module_name + " module is already off")
 
 
-def register_connection_switchers(client: ScheduledClient, module_name: str):
-    __register_connection_switcher(client, module_name, True)
-    __register_connection_switcher(client, module_name, False)
+def register_connection_switchers(client: ScheduledClient, module_name: str, session: Session):
+    __register_connection_switcher(client, module_name, True, session)
+    __register_connection_switcher(client, module_name, False, session)
 
     @on_callback_query(client, filters.regex(r"^" + module_name))
     async def switch_connection_query(_, message: Message):
         turn_str: str = message.text.split(UNDERLINE, 1)[1]
-        await switch_connection(client, message, module_name, get_turn_bool(turn_str))
+        await switch_connection(client, message, module_name, get_turn_bool(turn_str), session)
         await message.edit_reply_markup(create_keyboard_markup(module_name, reverse_turn_str(turn_str)))
 
 
-def __register_connection_switcher(client: ScheduledClient, module_name: str, turn_bool: bool):
+def __register_connection_switcher(client: ScheduledClient, module_name: str, turn_bool: bool, session: Session):
     @on_typed_message(client, filters.command(get_turn_str(turn_bool) + "_" + module_name))
-    async def func(_, message):
-        await switch_connection(client, message, module_name, turn_bool)
+    def func(_, message):
+        switch_connection(client, message, module_name, turn_bool, session)
 
 
-async def switch_connection(client: ScheduledClient, message, module_name, turn_bool):
+async def switch_connection(client: ScheduledClient, message, module_name, turn_bool, session: Session):
     job: Job | None = client.scheduler.get_job(client.get_unique_job_id(message.chat.id, module_name))
     check_job_state(job, module_name, must_job_run=not turn_bool)
-    database.update_gmail_module(message.chat.id, module_is_on=turn_bool)
+    session.set_session_module_is_on(message.chat.id, module_is_on=turn_bool)
+
     if turn_bool:
         job.resume()
         await client.send_reply_message(message, PLAY_EMOJI + WHITESPACE + module_name + " module is on")
