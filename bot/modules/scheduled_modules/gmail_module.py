@@ -56,7 +56,8 @@ class GmailModule(ScheduledClient):
 
         @on_typed_message(self, filters.command(GMAIL))
         async def send_my_gmail(_, message: Message):
-            gmail_address_str, module_is_on = self.__gmail_sessions.get_session_and_module_is_on_by_chat_id(message.chat.id)
+            gmail_address_str, module_is_on = self.__gmail_sessions.get_session_and_module_is_on_by_chat_id(
+                message.chat.id)
             if gmail_address_str is None:
                 raise TelegramBotError("You have not set a gmail connection yet.\n"
                                        "To set a connection, use the command with gmail app password:\n"

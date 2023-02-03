@@ -1,11 +1,10 @@
 import re
 
+from bot.constants.lesson import DAYS, WEEKS
 from bot.constants.regex import LINK_REGEX, TIME_REGEX
-from bot.constants.lesson import DAYS, WEEKS, NAME, DAY, TIME, WEEK, LINK
 from bot.database.lesson.lesson import Lesson
 from bot.database.lesson.raw_lesson import RawLesson
 from bot.exceptions.telegram_bot_error import TelegramBotError
-from bot.helpers.json_helper import get_from_json
 
 
 def parse_lessons_from_schedule_json(schedule: list[dict]) -> list[Lesson]:
@@ -23,12 +22,8 @@ def __parse_lesson(raw_lesson: RawLesson) -> Lesson:
     name: str = __parse_name(raw_lesson.get_name())
     day: str = __parse_day(raw_lesson.get_day())
     time: str = __parse_time(raw_lesson.get_time())
-    week: int = __parse_week(raw_lesson.get_week())
-    if raw_lesson.get_link():
-        link = __parse_link(raw_lesson.get_link())
-    else:
-        link: str = "The event has started"
-
+    week: int | None = __parse_week(raw_lesson.get_week())
+    link: str | None = __parse_link(raw_lesson.get_link())
     return Lesson(name, day, time, week, link)
 
 
@@ -38,7 +33,9 @@ def __parse_name(name: str) -> str:
     return name
 
 
-def __parse_link(link: str) -> str:
+def __parse_link(link: str | None) -> str | None:
+    if link is None:
+        return None
     match = re.match(LINK_REGEX, link)
     if match is None:
         raise TelegramBotError("Link in json is incorrect")
@@ -51,7 +48,9 @@ def __parse_day(day: str) -> str:
     return day
 
 
-def __parse_week(week: str) -> int:
+def __parse_week(week: str | None) -> int | None:
+    if week is None:
+        return None
     try:
         num = int(week)
     except ValueError:

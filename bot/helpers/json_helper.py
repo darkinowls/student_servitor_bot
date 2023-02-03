@@ -14,7 +14,10 @@ def check_document_is_json(document: Document) -> bool:
 def load_schedule_json_from_file(filepath) -> list[dict]:
     try:
         with open(filepath) as f:
-            return json.load(f).get(SCHEDULE)
+            schedule_list: list[dict] = json.load(f).get(SCHEDULE)
+            if len(schedule_list) == 0:
+                raise TelegramBotError('Schedule array is empty. Check examples in the documentation')
+            return schedule_list
     except ValueError:
         raise TelegramBotError('JSON syntax error')
     except KeyError:

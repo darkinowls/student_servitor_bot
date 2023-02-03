@@ -2,7 +2,6 @@ from apscheduler.job import Job
 from pyrogram import filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
-from bot import database
 from bot.constants.emoji import PLAY_EMOJI, PAUSE_EMOJI
 from bot.constants.general import WHITESPACE, UNDERLINE
 from bot.database.session import Session

@@ -171,7 +171,14 @@ Firstly, in order to set gmail module up you need to get application password fr
 
 **The detail google guide how to get one: https://support.google.com/accounts/answer/185833**
 
-Then you send /gmail [gmail] [app-pass] in the chat with the bot like below:
+**Secondly, it's required to turn on IMAP in your gmail account and DON'T forget to save changes**
+
+The link to settings: https://mail.google.com/mail/u/1/#settings/fwdandpop
+
+You should to do this:
+![img.png](images_for_readme/gmail_imap.png)
+
+Then you should send /gmail [gmail] [app-pass] in the chat with the bot like below:
 
 > /gmail yourgmail@gmail.com gsmpchivlxkoiqad
 
@@ -201,9 +208,9 @@ Thereby, the messages about lessons will be sent to the group.
 
 #### Schedule field rules
 
-* week: 1-2. There are odd days(1) and even ones(2). **Required**
-* day: "Monday", "Thursday" ... "Sunday". Any day of the week. **Required**
+* week: 1 or 2. There are odd days(1) and even ones(2). If not present - both weeks. **Optional**
 * link: a link string of the meeting "https://...". **Optional**
+* day: "Monday", "Thursday" ... "Sunday". Any day of the week. **Required**
 * name: The subject name or anything else. **Required**
 * time: 24-Hours time format: "00:00". **Required**
 
@@ -216,7 +223,6 @@ Thereby, the messages about lessons will be sent to the group.
       "link": "https://zoom.com/321",
       "day": "Monday",
       "time": "08:30",
-      "week": 1,
       "name": "Math"
     },
     {

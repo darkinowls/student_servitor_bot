@@ -32,7 +32,10 @@ class ScheduleModule(ScheduledClient):
         day_str: str = get_current_day_str()
         time_str: str = get_current_time_str()
         for lesson in lessons:
-            if lesson.get_week() == week_num and lesson.get_day() == day_str and lesson.get_time() == time_str:
+            do_this_week: bool = (lesson.get_week() == 0) or (lesson.get_week() == week_num)
+            do_this_day: bool = lesson.get_day() == day_str
+            do_this_time: bool = lesson.get_time() == time_str
+            if do_this_week and do_this_day and do_this_time:
                 self.send_message(chat_id=chat_id,
                                   text=lesson.get_name() + END_LINE + lesson.get_link())
 
@@ -40,7 +43,7 @@ class ScheduleModule(ScheduledClient):
         for session in schedule_session.get_all_sessions():
             chat_id = int(session.get(CHAT_ID))
             module_is_on = bool(session.get(MODULE_IS_ON))
-            lessons: list[Lesson] = retrieve_lessons_from_schedule_json(session.get(SCHEDULE))  # it parse and gets lessons
+            lessons: list[Lesson] = retrieve_lessons_from_schedule_json(session.get(SCHEDULE))  # it retrieve lessons
             job: Job = self.add_job_to_scheduler(chat_id, INTERVAL_SECS_SCHEDULE,
                                                  self.__send_on_schedule,
                                                  SCHEDULE, lessons)

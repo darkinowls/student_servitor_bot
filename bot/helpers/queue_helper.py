@@ -1,5 +1,6 @@
 import re
 from collections import OrderedDict
+
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 
 from bot.constants.emoji import SCROLL_EMOJI
@@ -7,7 +8,7 @@ from bot.constants.general import END_LINE
 from bot.constants.help_alerts import SWAP_HELP, RM_HELP, HEADER_HELP, ADD_HELP
 from bot.constants.regex import RECORD_REGEX, END_LINE_BEHIND_REGEX, END_AHEAD_REGEX
 from bot.exceptions.telegram_bot_error import TelegramBotError
-from bot.helpers.command_helper import get_parameters_list, get_single_text_parameter, check_param_size
+from bot.helpers.command_helper import get_parameters_list, check_param_size
 from bot.modules.simple_client import SimpleClient
 
 
@@ -15,7 +16,7 @@ def create_record(text: str) -> tuple[int | None, str]:
     check_param_size(text)
     match = re.search('^' + RECORD_REGEX + '$', text)
     if not match:
-        raise TelegramBotError("Enter index and name. At least name")
+        raise TelegramBotError("Enter index and name to create a record in the queue. At least name")
 
     record_index = match.group(1)
     if record_index and record_index >= 1000:
