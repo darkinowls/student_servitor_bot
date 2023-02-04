@@ -1,11 +1,8 @@
 from collections.abc import Callable
 
 from pyrogram import Client
-from pyrogram.types import Message, InlineKeyboardMarkup, CallbackQuery
-from pyrogram.types import User
-from bot.constants.emoji import CHECK_BOX_EMOJI
-from bot.constants.general import WHITESPACE
-from bot.exceptions.telegram_bot_error import TelegramBotError
+from pyrogram.types import Message, InlineKeyboardMarkup
+
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 
 

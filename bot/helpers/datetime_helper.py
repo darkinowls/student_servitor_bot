@@ -1,7 +1,6 @@
 import datetime
 
 
-
 def get_current_week_number() -> int:
     """
     :return: number of week. 1 - first week and 2 - second week

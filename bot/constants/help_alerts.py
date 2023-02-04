@@ -9,8 +9,7 @@ RM_HELP = HELP_TITLE + "/rm 1 2 .. 5\n" \
 HEADER_HELP = HELP_TITLE + "/header Lab 5 Math\n" \
                            "Sets the replied queue header"
 
-ADD_HELP = HELP_TITLE + "1 Arthur Jotaro\n" \
-                        "Creates the replied queue record"
+ADD_HELP = HELP_TITLE + "Reply the queue and enter your name with index or not"
 
 HELP = \
     """
@@ -34,3 +33,13 @@ Commands:
 
 /help - Sends the message with commands
     """
+
+# LABELS
+
+HOW_TO_ADD = "How to add"
+
+HOW_TO_SET_HEADER = "How to set header"
+
+HOW_TO_REMOVE = "How to remove"
+
+HOW_TO_SWAP = "How to swap"

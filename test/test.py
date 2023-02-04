@@ -6,7 +6,9 @@ from bot.helpers.datetime_helper import get_current_week_number, get_current_tim
 
 class MyTestCase(unittest.TestCase):
 
-
+    def test_utf_8(self):
+        utf8_message = b"\xD0\xBF\xD1\x80\xD0\xB8\xD0\xB2\xD1\x96\xD1\x82".decode()
+        self.assertEqual("привіт", utf8_message)
 
     def test_unicode_escape(self):
         utf16_message = '\\u0414\\u043e\\u0431\\u0440\\u043e\\u0433\\u043e \\u0432\\u0435\\u0447\\u0435\\u0440\\u0430'

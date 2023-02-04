@@ -5,7 +5,8 @@ from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 
 from bot.constants.emoji import SCROLL_EMOJI
 from bot.constants.general import END_LINE
-from bot.constants.help_alerts import SWAP_HELP, RM_HELP, HEADER_HELP, ADD_HELP
+from bot.constants.help_alerts import SWAP_HELP, RM_HELP, HEADER_HELP, ADD_HELP, HOW_TO_SWAP, HOW_TO_REMOVE, \
+    HOW_TO_SET_HEADER, HOW_TO_ADD
 from bot.constants.regex import RECORD_REGEX, END_LINE_BEHIND_REGEX, END_AHEAD_REGEX
 from bot.exceptions.telegram_bot_error import TelegramBotError
 from bot.helpers.command_helper import get_parameters_list, check_param_size
@@ -132,10 +133,10 @@ def swap_records_by_indexes(first: int, second: int, record_dict: OrderedDict) -
 
 
 def create_queue_help_markup() -> InlineKeyboardMarkup:
-    swap_help = InlineKeyboardButton("swap", callback_data=SWAP_HELP)
-    rm_help = InlineKeyboardButton("remove", callback_data=RM_HELP)
-    header_help = InlineKeyboardButton("header", callback_data=HEADER_HELP)
-    add_help = InlineKeyboardButton("add", callback_data=ADD_HELP)
+    swap_help = InlineKeyboardButton(HOW_TO_SWAP, callback_data=SWAP_HELP)
+    rm_help = InlineKeyboardButton(HOW_TO_REMOVE, callback_data=RM_HELP)
+    header_help = InlineKeyboardButton(HOW_TO_SET_HEADER, callback_data=HEADER_HELP)
+    add_help = InlineKeyboardButton(HOW_TO_ADD, callback_data=ADD_HELP)
     return InlineKeyboardMarkup([
         [add_help, header_help],
         [rm_help, swap_help]

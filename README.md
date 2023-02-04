@@ -143,7 +143,7 @@ It's possible to:
     * Reply to a queue is required
     * A header is text (no more than 100 chars);
 
-There is a hint when you click at one of the button, if you forget one
+There are hints when you click at one of the button, if you forget one
 
 ![hint_buttons.png](images_for_readme/hint_buttons.png)
 

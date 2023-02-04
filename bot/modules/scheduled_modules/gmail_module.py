@@ -6,6 +6,7 @@ from pyrogram.types import Message
 from bot.constants.database import CHAT_ID, APP_PASSWORD, GMAIL_ADDRESS, MODULE_IS_ON
 from bot.constants.gmail import GMAIL, INTERVAL_SECS_GMAIL
 from bot.database.gmail_session import GmailSession
+from bot.decorators.on_message import on_message
 
 from bot.decorators.on_typed_message import on_typed_message
 from bot.email.gmail_client import GmailClient

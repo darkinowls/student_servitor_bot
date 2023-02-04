@@ -6,8 +6,8 @@ PLAIN = 'plain'
 EMAIL = 'email'
 NAME = 'name'
 SUBJECT = 'subject'
-GMAIL_COM_REFERENCE = "Reference: https://mail.google.com/mail/u/0/"
-TEXT = "Text"
+GMAIL_COM_REFERENCE = "Gmail: https://mail.google.com/mail/u/0/"
+Content = "Content"
 GMAIL = "gmail"
 
 IMAP_GMAIL_SERVER: str = "imap.gmail.com"

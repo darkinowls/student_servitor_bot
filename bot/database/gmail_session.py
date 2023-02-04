@@ -17,7 +17,7 @@ class GmailSession(Session):
 
     def upsert_session(self, chat_id: int, session_data: list[str], module_is_on: bool = True) -> bool:
         gmail_address: str = session_data[0]
-        app_password: str = session_data[0]
+        app_password: str = session_data[1]
         return self.__get_session_collection().update_one({CHAT_ID: chat_id},
                                                           {SET_COMMAND: {
                                                               GMAIL_ADDRESS: gmail_address,

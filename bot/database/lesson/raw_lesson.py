@@ -1,8 +1,4 @@
-import re
-
-from bot.constants.lesson import NAME, DAY, LINK, TIME, WEEK, DAYS, WEEKS
-from bot.constants.regex import LINK_REGEX, TIME_REGEX
-from bot.exceptions.telegram_bot_error import TelegramBotError
+from bot.constants.lesson import NAME, DAY, LINK, TIME, WEEK
 from bot.helpers.json_helper import get_from_json
 
 
