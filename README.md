@@ -351,18 +351,18 @@ MONGO_CONNECTION_STRING=mongodb+srv://user:password@cluster.mongodb.net/student_
 Don't forget to set up venv and activate it:
 
 ```shell
-python -m venv .venv
-source .venv/Scripts/activate
+python3.11 -m venv .venv
+source .venv/bin/activate
 ```
 
 Then, in order to install all the required modules in this python project you need to run:
 
 ```shell
-pip install -r requirements.txt
+pip3.11 install -r requirements.txt
 ```
 
 To run the project:
 
 ```shell
-python main.py
+python3.11 main.py
 ```
