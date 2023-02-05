@@ -17,7 +17,10 @@ class RawLesson:
         self.__name: str = get_from_json(NAME, lesson_json)
         self.__day: str = get_from_json(DAY, lesson_json)
         self.__time: str = get_from_json(TIME, lesson_json)
-        self.__week: str = get_from_json(WEEK, lesson_json)
+
+        self.__week: None | str = None
+        if WEEK in lesson_json.keys():
+            self.__week: str = get_from_json(WEEK, lesson_json)
 
         self.__link: None | str = None
         if LINK in lesson_json.keys():
