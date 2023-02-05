@@ -358,7 +358,7 @@ source .venv/Scripts/activate
 Then, in order to install all the required modules in this python project you need to run:
 
 ```shell
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 To run the project:
