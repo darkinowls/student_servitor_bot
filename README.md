@@ -304,7 +304,7 @@ say the current week number
 
 ---
 
-## Installation on a server
+## Installation on a personal computer
 
 ### Telegram API keys
 
@@ -328,7 +328,52 @@ You need to obtain MongoDB database in Atlas by the guide: https://www.mongodb.c
 After all, you need to obtain **connection string**. The guide is
 helpful: https://www.mongodb.com/docs/guides/atlas/connection-string/
 
-### Student Servitor Bot set up
+
+
+### Student Servitor Bot set up by Docker (FOR DEPLOYMENT)
+
+
+Install git and docker
+
+```bash
+sudo apt update && sudo apt-get install git -y
+
+sudo apt-get install docker docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+```
+
+Clone the project by git
+```shell
+git clone https://github.com/Darkinowls/student_servitor_bot.git
+```
+
+Enter the directory
+```shell
+cd student_servitor_bot
+```
+
+Then you need **create .env** file with your **api_id**, **api_hash**, **bot_token** and **connection string**
+
+There is an .env.example as an example:
+
+```dotenv
+API_ID=12345678
+API_HASH=12345678906de2fbmage1a3b6e8TYPE4
+BOT_TOKEN=1234567890:AAFUawNMAGELchPtMjmkyMagethXjDBKiu4
+
+MONGO_CONNECTION_STRING=mongodb+srv://user:password@cluster.mongodb.net/student_bot?retryWrites=true&w=majority
+```
+
+Create image of app by docker
+```shell
+sudo docker build -t student_bot .
+```
+
+And run it!
+```shell
+sudo docker run student_bot
+```
+
+### Student Servitor Bot set up in Windows (FOR DEVELOPING)
 
 Firstly, you need to copy this project by the command:
 
@@ -349,6 +394,7 @@ MONGO_CONNECTION_STRING=mongodb+srv://user:password@cluster.mongodb.net/student_
 ```
 
 Don't forget to set up venv and activate it:
+
 
 ```shell
 python3.11 -m venv .venv
