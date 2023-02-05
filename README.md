@@ -332,9 +332,7 @@ helpful: https://www.mongodb.com/docs/guides/atlas/connection-string/
 
 ### Student Servitor Bot set up by Docker (FOR DEPLOYMENT)
 
-
 Install git and docker
-
 ```bash
 sudo apt update && sudo apt-get install git -y
 
@@ -352,6 +350,10 @@ cd student_servitor_bot
 ```
 
 Then you need **create .env** file with your **api_id**, **api_hash**, **bot_token** and **connection string**
+
+```shell
+nano .env
+```
 
 There is an .env.example as an example:
 
@@ -376,7 +378,6 @@ sudo docker run student_bot
 ### Student Servitor Bot set up in Windows (FOR DEVELOPING)
 
 Firstly, you need to copy this project by the command:
-
 ```bash
 git clone https://github.com/Darkinowls/student_servitor_bot.git
 ```
@@ -384,7 +385,6 @@ git clone https://github.com/Darkinowls/student_servitor_bot.git
 Then you need create .env file with your **api_id**, **api_hash**, **bot_token** and **connection string**
 
 There is an .env.example as an example:
-
 ```dotenv
 API_ID=12345678
 API_HASH=12345678906de2fbmage1a3b6e8TYPE4
@@ -394,21 +394,17 @@ MONGO_CONNECTION_STRING=mongodb+srv://user:password@cluster.mongodb.net/student_
 ```
 
 Don't forget to set up venv and activate it:
-
-
 ```shell
 python3.11 -m venv .venv
-source .venv/bin/activate
+source .venv/Scripts/activate
 ```
 
 Then, in order to install all the required modules in this python project you need to run:
-
 ```shell
 pip3.11 install -r requirements.txt
 ```
 
 To run the project:
-
 ```shell
 python3.11 main.py
 ```
