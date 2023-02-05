@@ -21,21 +21,28 @@ class GmailModule(ScheduledClient):
     def __send_on_schedule(self, *args: int | GmailClient):
         gmail_client: GmailClient = args[0]
         chat_id = args[1]
-        texts: list[str] = gmail_client.get_new_messages()
-        for text in texts:
-            self.send_message(chat_id=chat_id, text=text)
+        try:
+            texts: list[str] = gmail_client.get_new_messages()
+            for text in texts:
+                self.send_message(chat_id=chat_id, text=text)
+        except TelegramBotError as error:
+            self.send_message(chat_id, error.__str__())
 
     def __add_previous_sessions_to_scheduler(self, gmail_session: GmailSession) -> AsyncIOScheduler:
+
         for session in gmail_session.get_all_sessions():
             chat_id = int(session.get(CHAT_ID))
             app_password = session.get(APP_PASSWORD)
             gmail_address = session.get(GMAIL_ADDRESS)
             module_is_on = bool(session.get(MODULE_IS_ON))
-            gmail_client: GmailClient = GmailClient(gmail_address, app_password)
-            job: Job = self.add_job_to_scheduler(chat_id, INTERVAL_SECS_GMAIL, self.__send_on_schedule,
-                                                 GMAIL, gmail_client)
-            if not module_is_on:
-                job.pause()
+            try:
+                gmail_client: GmailClient = GmailClient(gmail_address, app_password)
+                job: Job = self.add_job_to_scheduler(chat_id, INTERVAL_SECS_GMAIL, self.__send_on_schedule,
+                                                     GMAIL, gmail_client)
+                if not module_is_on:
+                    job.pause()
+            except TelegramBotError as error:
+                self.send_message(chat_id, error.__str__())
         return self.scheduler
 
     def __init__(self, api_id, api_hash, bot_token):

@@ -41,7 +41,6 @@ async def switch_connection(client: ScheduledClient, message, module_name, turn_
     job: Job | None = client.scheduler.get_job(client.get_unique_job_id(message.chat.id, module_name))
     check_job_state(job, module_name, must_job_run=not turn_bool)
     session.set_session_module_is_on(message.chat.id, module_is_on=turn_bool)
-
     if turn_bool:
         job.resume()
         await client.send_reply_message(message, PLAY_EMOJI + WHITESPACE + module_name + " module is on")
