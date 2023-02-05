@@ -34,10 +34,11 @@ gmail_sessions and schedule_sessions
         * [Schedule field rules](#schedule-field-rules)
         * [An example of json schedule](#an-example-of-json-schedule)
         * [Schedule module set up with images](#schedule-module-set-up-with-images)
-2. [How to install a bot on a server](#installation-on-a-server) (recommended for deployment engineer)
+2. [How to install a bot](#how-to-install-a-bot--for-developers-) (FOR DEVELOPERS)
     1. [Get Telegram API keys](#telegram-api-keys)
     2. [Get MongoDB Atlas Database](#mongodb-atlas)
-    3. [Student Servitor Bot set up](#student-servitor-bot-set-up)
+    3. [Student Servitor Bot set up by Docker](#student-servitor-bot-set-up-by-docker--for-deployment-) (FOR DEPLOYMENT)
+    4. [Student Servitor Bot set up in Windows](#student-servitor-bot-set-up-in-windows--for-developing-) (FOR DEVELOPING)
 
 ---
 
@@ -304,7 +305,7 @@ say the current week number
 
 ---
 
-## Installation on a personal computer
+## How to install a bot (FOR DEVELOPERS)
 
 ### Telegram API keys
 
@@ -332,7 +333,7 @@ helpful: https://www.mongodb.com/docs/guides/atlas/connection-string/
 
 ### Student Servitor Bot set up by Docker (FOR DEPLOYMENT)
 
-Install git and docker
+Install git and docker 
 ```bash
 sudo apt update && sudo apt-get install git -y
 
