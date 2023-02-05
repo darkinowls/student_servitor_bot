@@ -10,8 +10,8 @@ class RawLesson:
     __name: str
     __day: str
     __time: str
-    __week: str
-    __link: str | None
+    __week: str | None # optional
+    __link: str | None # optional
 
     def __init__(self, lesson_json):
         self.__name: str = get_from_json(NAME, lesson_json)
