@@ -342,7 +342,7 @@ Install git and docker
 ```bash
 sudo apt update && sudo apt-get install git -y
 
-sudo apt-get install docker docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+sudo apt install docker docker-compose -y
 ```
 
 Clone the project by git
@@ -371,14 +371,9 @@ BOT_TOKEN=1234567890:AAFUawNMAGELchPtMjmkyMagethXjDBKiu4
 MONGO_CONNECTION_STRING=mongodb+srv://user:password@cluster.mongodb.net/student_bot?retryWrites=true&w=majority
 ```
 
-Create image of app by docker
+Run docker compose!
 ```shell
-sudo docker build -t student_bot .
-```
-
-And run it!
-```shell
-sudo docker run student_bot
+sudo docker-compose up
 ```
 
 ### Student Servitor Bot set up in Windows (FOR DEVELOPING)
