@@ -2,7 +2,7 @@ import re
 
 from bot.constants.regex import GMAIL_REGEX
 from bot.exceptions.telegram_bot_error import TelegramBotError
-from bot.helpers.queue_helper import get_parameters_list
+from bot.helpers.parameter_helper import get_parameters_list
 
 
 def get_gmail_address_and_app_password_from_parameters(text: str) -> tuple[str, str]:

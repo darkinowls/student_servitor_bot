@@ -2,3 +2,5 @@ version: "1.0.0"
 services:
   student_bot:
     build: .
+    environment:
+      - TZ=Europe/Kiev

@@ -3,7 +3,7 @@ import datetime
 
 def get_current_week_number() -> int:
     """
-    :return: number of week. 1 - first week and 2 - second week
+    :return: number of week. 1 - first week(odd) and 2 - second week(even)
     """
     week_num: int = datetime.date.today().isocalendar().week + 1
     return 1 if week_num % 2 else 2

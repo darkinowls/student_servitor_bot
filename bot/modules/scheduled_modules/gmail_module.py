@@ -4,6 +4,8 @@ from pyrogram import filters
 from pyrogram.types import Message
 
 from bot.constants.database import CHAT_ID, APP_PASSWORD, GMAIL_ADDRESS, MODULE_IS_ON
+from bot.constants.emoji import ENVELOPE_EMOJI
+from bot.constants.general import WHITESPACE
 from bot.constants.gmail import GMAIL, INTERVAL_SECS_GMAIL
 from bot.database.gmail_session import GmailSession
 from bot.decorators.on_typed_message import on_typed_message
@@ -18,11 +20,12 @@ class GmailModule(ScheduledClient):
 
     def __send_on_schedule(self, *args: int | GmailClient):
         gmail_client: GmailClient = args[0]
-        chat_id = args[1]
+        chat_id: int = args[1]
         try:
             texts: list[str] = gmail_client.get_new_messages()
             for text in texts:
-                self.send_message(chat_id=chat_id, text=text)
+                message = self.send_message(chat_id=chat_id, text=ENVELOPE_EMOJI + WHITESPACE + text)
+                print(message)
         except TelegramBotError as error:
             self.send_message(chat_id, error.__str__())
 
@@ -41,6 +44,7 @@ class GmailModule(ScheduledClient):
                     job.pause()
             except TelegramBotError as error:
                 self.send_message(chat_id, error.__str__())
+
         return self.scheduler
 
     def __init__(self, api_id, api_hash, bot_token):

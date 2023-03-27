@@ -1,6 +1,11 @@
 # Student servitor bot
-
 ###### My diploma work
+
+Plans:
+1. Telemetry for better UX
+2. New commands for queue module. Based on UX
+3. Schedule json optimization
+4. Better IMAP handling
 
 ### Overview
 

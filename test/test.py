@@ -1,4 +1,5 @@
 import unittest
+from collections import OrderedDict
 
 from bot.email.extracted_message import UNICODE_ESCAPE
 from bot.helpers.datetime_helper import get_current_week_number, get_current_time_str, get_current_day_str
@@ -30,6 +31,9 @@ class MyTestCase(unittest.TestCase):
 
     def test_bool(self):
         print(True)
+
+    def test_OrderedDict(self):
+        self.assertEqual([], list(OrderedDict({0: "amogus"})))
 
 
 if __name__ == '__main__':

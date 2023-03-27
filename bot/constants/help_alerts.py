@@ -11,7 +11,7 @@ HEADER_HELP = HELP_TITLE + "/header Lab 5 Math\n" \
 
 ADD_HELP = HELP_TITLE + "Reply the queue and enter your name with index or not"
 
-HELP = \
+ALL_COMMANDS = \
     """
 Commands:
     

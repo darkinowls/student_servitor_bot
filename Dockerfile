@@ -1,6 +1,6 @@
 FROM python:3.11.1
 
-WORKDIR /stident_bot
+WORKDIR /student_bot
 
 COPY . ./
 

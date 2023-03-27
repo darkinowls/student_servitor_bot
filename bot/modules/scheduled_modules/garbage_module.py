@@ -1,5 +1,5 @@
 from bot.constants.general import INTERVAL_SECS_GARBAGE_COLLECTOR, FILE_GARBAGE_COLLECTOR
-from bot.helpers.tmp_helper import delete_old_tmp_files
+from bot.helpers.json_helper import delete_old_tmp_files
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 

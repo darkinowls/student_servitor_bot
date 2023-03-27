@@ -32,7 +32,7 @@ class ExtractedMessage:
         self.attachments: list[dict] = message.attachments
 
     def __str__(self) -> str:
-        result_str: str = ENVELOPE_EMOJI + WHITESPACE + self.sender_name + WHITESPACE + self.sender_email + END_LINE
+        result_str: str = self.sender_name + WHITESPACE + self.sender_email + END_LINE
         result_str += RECEIVER + COLON + self.receiver_email + END_LINE
         result_str += SUBJECT_UPPER + COLON + self.subject + END_LINE if self.subject else EMPTY_STR
         result_str += END_LINE + self.text + END_LINE if self.text else EMPTY_STR

@@ -6,7 +6,8 @@ from pyrogram import filters
 from pyrogram.types import Message
 
 from bot.constants.database import CHAT_ID, SCHEDULE, MODULE_IS_ON
-from bot.constants.general import END_LINE
+from bot.constants.emoji import CLOCK_EMOJI
+from bot.constants.general import END_LINE, WHITESPACE
 from bot.constants.schedule import INTERVAL_SECS_SCHEDULE
 from bot.database.lesson.lesson_parser import parse_lessons_from_schedule_json
 from bot.database.lesson.lesson_retriever import retrieve_lessons_from_schedule_json
@@ -16,9 +17,9 @@ from bot.decorators.on_typed_message import on_typed_message
 from bot.exceptions.telegram_bot_error import TelegramBotError
 from bot.helpers.datetime_helper import get_current_week_number, get_current_time_str, \
     get_current_day_str
-from bot.helpers.json_helper import check_document_is_json, load_schedule_json_from_file
+from bot.helpers.json_helper import check_document_is_json, load_schedule_json_from_file, create_tmp_json_filepath, \
+    create_tmp_json_file
 from bot.helpers.scheduler_helper import register_connection_switchers, create_keyboard_markup, get_turn_str
-from bot.helpers.tmp_helper import create_tmp_json_filepath, create_tmp_json_file
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 
@@ -31,13 +32,16 @@ class ScheduleModule(ScheduledClient):
         week_num: int = get_current_week_number()
         day_str: str = get_current_day_str()
         time_str: str = get_current_time_str()
+
         for lesson in lessons:
             do_this_week: bool = (lesson.get_week() == 0) or (lesson.get_week() == week_num)
             do_this_day: bool = lesson.get_day() == day_str
             do_this_time: bool = lesson.get_time() == time_str
             if do_this_week and do_this_day and do_this_time:
-                self.send_message(chat_id=chat_id,
-                                  text=lesson.get_name() + END_LINE + lesson.get_link())
+                message = self.send_message(chat_id=chat_id,
+                                            text=CLOCK_EMOJI + WHITESPACE + lesson.get_name() + END_LINE + lesson.get_link())
+                # Delete job and
+                print(message)
 
     def __add_previous_sessions_to_scheduler(self, schedule_session: ScheduleSession) -> AsyncIOScheduler:
         for session in schedule_session.get_all_sessions():

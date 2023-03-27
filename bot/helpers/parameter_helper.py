@@ -36,7 +36,7 @@ def get_single_text_parameter(text: str, should_exist: bool = True) -> str:
     except IndexError:
         if not should_exist:
             return EMPTY_STR
-        raise TelegramBotError("No parameter")
+        raise TelegramBotError("No parameters!")
 
 
 def check_param_size(parameter: str):

@@ -1,6 +1,8 @@
+import re
+
 GMAIL_REGEX = r"^[a-z0-9](\.?[a-z0-9]){5,}@gmail\.com$"
 
-RECORD_REGEX = r'(\d{1,})?\.?\s*([a-zA-ZА-ЯҐЄІЇа-яґєії]{1,20}.+)'
+RECORD_REGEX = r'(\d{1,})?\.?\s*([a-zA-ZА-ЯҐЄІЇа-яґєії]{1,20}.*)'
 
 END_LINE_BEHIND_REGEX = r'(?<=\n)'
 END_AHEAD_REGEX = r'(?=\n|$)'
@@ -11,3 +13,5 @@ LINK_REGEX: str = r"^http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-
 TIME_REGEX: str = r"^([01][0-9])|(2[0-4])\:[0-6][0-9]$"
 
 URL_BAD_SIGNS_REGEX = r"[^a-zA-ZА-ЯҐЄІЇа-яґєії0-9\s]*"
+
+SWAP_REGEX = r"^\s*\d+\s+\d+\s*$"
