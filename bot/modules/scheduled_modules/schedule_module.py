@@ -62,7 +62,7 @@ class ScheduleModule(ScheduledClient):
         register_connection_switchers(self, SCHEDULE, self.__schedule_sessions)
 
         @on_typed_message(self, filters.command(SCHEDULE) & filters.document)
-        async def set_gmail_connection(_, message: Message):
+        async def set_schedule(_, message: Message):
             check_document_is_json(message.document)
             filepath: str = await self.download_media(message,
                                                       file_name=create_tmp_json_filepath(SCHEDULE, message.chat.id))

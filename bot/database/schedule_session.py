@@ -12,18 +12,18 @@ class ScheduleSession(Session):
 
     def set_session_module_is_on(self, chat_id: int, module_is_on: bool) -> bool:
         return self.__get_session_collection().update_one({CHAT_ID: chat_id},
-                                                                    {SET_COMMAND: {
-                                                                        MODULE_IS_ON: module_is_on}}).matched_count == 1
+                                                          {SET_COMMAND: {
+                                                              MODULE_IS_ON: module_is_on}}).matched_count == 1
 
     def upsert_session(self, chat_id: int, schedule: list[dict], module_is_on: bool = True) -> bool:
         return self.__get_session_collection().update_one({CHAT_ID: chat_id},
-                                                               {SET_COMMAND: {
-                                                                   SCHEDULE: schedule,
-                                                                   MODULE_IS_ON: module_is_on
-                                                               }},
-                                                               upsert=True).matched_count == 1
+                                                          {SET_COMMAND: {
+                                                              SCHEDULE: schedule,
+                                                              MODULE_IS_ON: module_is_on
+                                                          }},
+                                                          upsert=True).matched_count == 1
 
-    def get_session_and_module_is_on_by_chat_id(self, chat_id: int) -> tuple[str | None, bool | None]:
+    def get_session_and_module_is_on_by_chat_id(self, chat_id: int) -> tuple[dict | str | None, bool | None]:
         result: dict = self.__get_session_collection().find_one(
             {CHAT_ID: chat_id},
             {SCHEDULE: 1, MODULE_IS_ON: 1, ID: 0}

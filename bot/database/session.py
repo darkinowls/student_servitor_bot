@@ -30,5 +30,5 @@ class Session:
         pass
 
     @abstractmethod
-    def get_session_and_module_is_on_by_chat_id(self, chat_id: int) -> tuple[str | None, bool | None]:
+    def get_session_and_module_is_on_by_chat_id(self, chat_id: int) -> tuple[dict | str | None, bool | None]:
         pass

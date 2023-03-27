@@ -8,17 +8,14 @@ from bot.constants.database import SCHEDULE
 from bot.constants.general import TMP_FOLDER
 from bot.exceptions.telegram_bot_error import TelegramBotError
 
+ENCODING = "utf-8"
 
-def get_tmp_json_file(filename: str, chat_id: int, data: dict = None) -> str:
+
+def create_tmp_json_file(filename: str, chat_id: int, json_str: str) -> str:
     filepath = create_tmp_json_filepath(filename, chat_id)
-    if not os.path.isfile(filepath):
-        __create_json_file(filepath, data)
-    return filepath
-
-
-def create_tmp_json_file(filename: str, chat_id: int, data: dict = None) -> str:
-    filepath = create_tmp_json_filepath(filename, chat_id)
-    __create_json_file(filepath, data)
+    if os.path.isfile(filepath):
+        os.remove(filepath)
+    __create_json_file(filepath, json_str)
     return filepath
 
 
@@ -27,9 +24,10 @@ def create_tmp_json_filepath(filename, chat_id) -> str:
     return TMP_FOLDER + filename + "_" + chat_id.__str__() + ".json"
 
 
-def __create_json_file(filepath, data: dict):
-    with open(filepath, mode="w") as json_file:
-        json.dump(data, json_file)
+def __create_json_file(filepath: str, json_str: str) -> None:
+    json_dict: dict = json.loads(json_str)
+    with open(filepath, mode="w", encoding=ENCODING) as json_file:
+        json.dump(json_dict, json_file, ensure_ascii=False)
 
 
 def delete_old_tmp_files(*args: int):
@@ -52,9 +50,9 @@ def check_document_is_json(document: Document) -> bool:
     return True
 
 
-def load_schedule_json_from_file(filepath:str) -> list[dict]:
+def load_schedule_json_from_file(filepath: str) -> list[dict]:
     try:
-        with open(filepath) as file:
+        with open(filepath, mode="r", encoding=ENCODING) as file:
             schedule_list: list[dict] = json.load(file).get(SCHEDULE)
             if len(schedule_list) == 0:
                 raise TelegramBotError('Schedule array is empty. Check examples in the documentation')

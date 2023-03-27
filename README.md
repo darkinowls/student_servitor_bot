@@ -343,6 +343,8 @@ Install git and docker
 sudo apt update && sudo apt-get install git -y
 
 sudo apt install docker docker-compose -y
+
+sudo systemctl start docker
 ```
 
 Clone the project by git
