@@ -4,7 +4,6 @@
       "link": "https://zoom.com/321",
       "day": "Monday",
       "time": "08:30",
-      "week": 1,
       "name": "Math"
     },
     {
@@ -37,7 +36,6 @@
       "link": "https://zoom.com/123",
       "day": "Saturday",
       "time": "10:00",
-      "week": 2,
       "name": "Dev ops"
     },
     {
