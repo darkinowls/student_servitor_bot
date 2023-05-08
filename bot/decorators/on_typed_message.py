@@ -7,7 +7,7 @@ def on_typed_message(self=SimpleClient, filters=None, group: int = 0) -> Callabl
 
     def decorator(func):
         @self.on_message(filters, group)
-        @self.on_edited_message(filters, group)
+        # @self.on_edited_message(filters, group)
         async def register_function(client, message):
             await client.run_wrapped_function(message, func)
 

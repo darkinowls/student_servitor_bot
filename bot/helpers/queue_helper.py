@@ -12,12 +12,12 @@ from bot.exceptions.telegram_bot_error import TelegramBotError
 from bot.modules.simple_client import SimpleClient
 
 
-def add_record_to_record_dict(record_dict: OrderedDict, record_index: int, record_value: str) -> OrderedDict:
+def add_record_to_record_dict(record_dict: OrderedDict, record_index: int | None, record_value: str) -> OrderedDict:
     if len(record_dict) > 256:
-        raise TelegramBotError("Queue is full. 256 records is maximum")
+        raise TelegramBotError("Черга повна. 256 записів - це максимум")
 
     # if queue is empty then insert as the first one
-    if len(record_dict) == 0:
+    if len(record_dict) == 0 and record_index is None:
         return OrderedDict({0: record_value})
 
     # if no index then add as the last one
@@ -28,7 +28,7 @@ def add_record_to_record_dict(record_dict: OrderedDict, record_index: int, recor
 
     # if index is occupied then error else set
     if record_index in record_dict.keys():
-        raise TelegramBotError("Index is occupied")
+        raise TelegramBotError("Індекс занятий")
     else:
         record_dict[record_index] = record_value
         return record_dict
@@ -36,7 +36,7 @@ def add_record_to_record_dict(record_dict: OrderedDict, record_index: int, recor
 
 async def check_reply_to_my_queue_message(_, client: SimpleClient, message: Message, raiseable: bool = False) -> bool:
     """
-    Function for a filter and check, when raiseable=True
+    Function for a filter, or it checks, when raiseable=True
     :param _:
     :param client:
     :param message:

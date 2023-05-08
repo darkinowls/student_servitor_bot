@@ -11,8 +11,7 @@ def create_record(text: str) -> tuple[int | None, str]:
     if not match:
         raise TelegramBotError("Enter index and name to create a record in the queue. At least name")
 
-    record_index: int = match.group(1)
-    __check_record_index(record_index)
+    record_index: int | None = __parse_record_index(match.group(1))
 
     record_value: str = match.group(2)
     return record_index, record_value
@@ -29,8 +28,7 @@ def parse_str_list_to_int_list(parameters: list[str]) -> list[int]:
     try:
         index_list: list[int] = []
         for param in parameters:
-            index = int(param)
-            __check_record_index(index)
+            index:int = __parse_record_index(param)
             index_list.append(index)
         return index_list
     except ValueError:
@@ -40,9 +38,8 @@ def parse_str_list_to_int_list(parameters: list[str]) -> list[int]:
 def parse_index_ranges(parameters: list[str]) -> list[str]:
     two_dots_index: int = parameters.index("..")
     try:
-        next_int: int = int(parameters[two_dots_index + 1])
-        prev_int: int = int(parameters[two_dots_index - 1])
-        __check_record_index(next_int)
+        next_int: int = __parse_record_index(parameters[two_dots_index + 1])
+        prev_int: int = __parse_record_index(parameters[two_dots_index - 1])
         if prev_int >= next_int:
             raise TelegramBotError("The first number should be less than the second in .. expression")
     except (ValueError, IndexError):
@@ -69,6 +66,10 @@ def get_two_unique_indexes_from_parameters(text: str) -> tuple[int, int]:
     return first, second
 
 
-def __check_record_index(record_index: int):
+def __parse_record_index(record_index_str: str | None) -> int | None:
+    if record_index_str is None:
+        return None
+    record_index = int(record_index_str)
     if record_index and record_index >= 1000:
         raise TelegramBotError("To big index. It should be less 1000")
+    return record_index

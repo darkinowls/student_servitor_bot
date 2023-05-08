@@ -77,6 +77,7 @@ class ScheduleModule(ScheduledClient):
 
         @on_typed_message(self, filters.command(SCHEDULE))
         async def send_schedule_file(_, message: Message):
+            # TODO: "schedule" field
             schedule, module_is_on = self.__schedule_sessions.get_session_and_module_is_on_by_chat_id(message.chat.id)
             if schedule is None:
                 await self.send_reply_document(message, "schedule.example.json")
