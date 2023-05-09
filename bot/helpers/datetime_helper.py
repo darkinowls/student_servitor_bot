@@ -10,7 +10,7 @@ def get_current_week_number() -> int:
 
 
 def get_current_week_number_formatted() -> str:
-    return "1st" if get_current_week_number() == 1 else "2nd"
+    return "1ий" if get_current_week_number() == 1 else "2ий"
 
 
 def get_current_time_str() -> str:

@@ -1,6 +1,5 @@
 import re
 
-from bot.constants.emoji import ENVELOPE_EMOJI
 from bot.constants.general import EMPTY_STR, RETURN, END_LINE, COLON, WHITESPACE, THREE_DOTS
 from bot.constants.gmail import SUBJECT, NAME, EMAIL, PLAIN, RECEIVER, SUBJECT_UPPER, ATTACHMENTS, \
     GMAIL_COM_SEARCH_TEMPLATE, UNICODE_ESCAPE
@@ -33,10 +32,10 @@ class ExtractedMessage:
 
     def __str__(self) -> str:
         result_str: str = self.sender_name + WHITESPACE + self.sender_email + END_LINE
-        result_str += RECEIVER + COLON + self.receiver_email + END_LINE
-        result_str += SUBJECT_UPPER + COLON + self.subject + END_LINE if self.subject else EMPTY_STR
+        result_str += 'Отримувач' + COLON + self.receiver_email + END_LINE
+        result_str += 'Тема' + COLON + self.subject + END_LINE if self.subject else EMPTY_STR
         result_str += END_LINE + self.text + END_LINE if self.text else EMPTY_STR
-        result_str += END_LINE + ATTACHMENTS + COLON + len(self.attachments).__str__() + END_LINE if len(
+        result_str += END_LINE + 'Прикріплене' + COLON + len(self.attachments).__str__() + END_LINE if len(
             self.attachments) != 0 else EMPTY_STR
         result_str += END_LINE + GMAIL_COM_SEARCH_TEMPLATE + self.__create_search_url() + END_LINE
 

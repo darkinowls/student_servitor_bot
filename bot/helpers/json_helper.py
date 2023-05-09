@@ -46,7 +46,7 @@ def delete_old_tmp_files(*args: int):
 
 def check_document_is_json(document: Document) -> bool:
     if document is None or not document.file_name.endswith(".json"):
-        raise TelegramBotError("Json document is required")
+        raise TelegramBotError("Json файл потребується")
     return True
 
 
@@ -55,16 +55,16 @@ def load_schedule_json_from_file(filepath: str) -> list[dict]:
         with open(filepath, mode="r", encoding=ENCODING) as file:
             schedule_list: list[dict] = json.load(file).get(SCHEDULE)
             if len(schedule_list) == 0:
-                raise TelegramBotError('Schedule array is empty. Check examples in the documentation')
+                raise TelegramBotError('Масив "schedule" пустий. Переегляньте приклади в документації')
             return schedule_list
     except ValueError:
-        raise TelegramBotError('JSON syntax error')
+        raise TelegramBotError('Помилка синтаксису в json файлі')
     except KeyError:
-        raise TelegramBotError('No field "schedule" in the json')
+        raise TelegramBotError('Немає поля "schedule" в json файлі')
 
 
 def get_from_json(key: str, json_dict: dict):
     try:
         return json_dict.get(key)
     except KeyError:
-        raise TelegramBotError("No key such as " + key)
+        raise TelegramBotError("Немає такого поля як " + key)

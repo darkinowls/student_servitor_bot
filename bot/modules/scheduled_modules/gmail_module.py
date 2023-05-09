@@ -61,7 +61,7 @@ class GmailModule(ScheduledClient):
             self.add_job_to_scheduler(message.chat.id, INTERVAL_SECS_GMAIL, self.__send_on_schedule,
                                       GMAIL, gmail_client)
             await self.send_success_reply_message(message,
-                                                  "Email auth is set successfully! You may delete the message",
+                                                  "Gmail з'єднання встановлено успішно! Можете видалити це повідомлення",
                                                   create_keyboard_markup(GMAIL, "off"))
 
         @on_typed_message(self, filters.command(GMAIL))
@@ -69,10 +69,10 @@ class GmailModule(ScheduledClient):
             gmail_address_str, module_is_on = self.__gmail_sessions.get_session_and_module_is_on_by_chat_id(
                 message.chat.id)
             if gmail_address_str is None:
-                raise TelegramBotError("You have not set a gmail connection yet.\n"
-                                       "To set a connection, use the command with gmail app password:\n"
+                raise TelegramBotError("Ви ще не встановили gmail з'єднання.\n"
+                                       "Аби встановити це з'єднання використайте команду:\n"
                                        "/gmail [gmail] [app-pass]"
                                        )
             await self.send_reply_message(message,
-                                          "Your current gmail address is " + gmail_address_str,
+                                          "Ваш gmail адрес " + gmail_address_str,
                                           create_keyboard_markup(GMAIL, get_turn_str(not module_is_on)))

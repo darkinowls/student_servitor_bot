@@ -115,6 +115,7 @@ def create_queue_help_markup() -> InlineKeyboardMarkup:
     header_help = InlineKeyboardButton(HOW_TO_SET_HEADER, callback_data=HEADER_HELP)
     add_help = InlineKeyboardButton(HOW_TO_ADD, callback_data=ADD_HELP)
     return InlineKeyboardMarkup([
-        [add_help, header_help],
-        [rm_help, swap_help]
+        [header_help],
+        [add_help, rm_help],
+        [swap_help]
     ])

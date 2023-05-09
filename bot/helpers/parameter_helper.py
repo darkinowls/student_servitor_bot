@@ -36,9 +36,9 @@ def get_single_text_parameter(text: str, should_exist: bool = True) -> str:
     except IndexError:
         if not should_exist:
             return EMPTY_STR
-        raise TelegramBotError("No parameters!")
+        raise TelegramBotError("Нема параметрів!")
 
 
 def check_param_size(parameter: str):
     if len(parameter) > 100:
-        raise TelegramBotError("Too big parameter")
+        raise TelegramBotError("Надто довгий параметр")

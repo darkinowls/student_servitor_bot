@@ -72,8 +72,8 @@ class ScheduleModule(ScheduledClient):
             self.add_job_to_scheduler(message.chat.id, INTERVAL_SECS_SCHEDULE,
                                       self.__send_on_schedule,
                                       SCHEDULE, lessons)
-            await self.send_success_reply_message(message, "Schedule module is successfully set!",
-                                                  create_keyboard_markup(SCHEDULE, "off"))
+            await self.send_success_reply_message(message, "Модуль розкладів успішно встановлено!",
+                                                  create_keyboard_markup(SCHEDULE, "викл"))
 
         @on_typed_message(self, filters.command(SCHEDULE))
         async def send_schedule_file(_, message: Message):
@@ -81,8 +81,8 @@ class ScheduleModule(ScheduledClient):
             schedule, module_is_on = self.__schedule_sessions.get_session_and_module_is_on_by_chat_id(message.chat.id)
             if schedule is None:
                 await self.send_reply_document(message, "schedule.example.json")
-                raise TelegramBotError("You have not set a schedule yet. Here is an example above.\n"
-                                       "To set a connection, use the command and a json file:\n"
+                raise TelegramBotError("Ви ще не встановили розклад. Зверху приклад файлу.\n"
+                                       "Аби встановити розклад викаристайте настпну команду і json файл:\n"
                                        "/schedule [schedule.json]")
             filepath: str = create_tmp_json_file("my_schedule", message.chat.id, json.dumps(schedule))
             await self.send_reply_document(message, filepath,

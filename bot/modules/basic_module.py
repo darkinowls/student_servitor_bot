@@ -35,7 +35,7 @@ class BasicModule(SimpleClient):
             """
             Everyone can say hello to Bot!
             """
-            await self.send_reply_message(message, (await self.get_me()).first_name + " welcomes you!")
+            await self.send_reply_message(message, (await self.get_me()).first_name + " вітає вас!")
 
         @on_typed_message(self, filters.reply & filters.command(COPY))
         async def set_message_text(_, message: Message):
@@ -48,8 +48,8 @@ class BasicModule(SimpleClient):
         @on_typed_message(self, filters.command([WEEK, W]))
         async def print_week_number(_, message: Message):
             await self.send_reply_message(message,
-                                          text=f"Today is the {get_current_week_number_formatted()} week")
+                                          text=f"Сьогодні {get_current_week_number_formatted()} тиждень")
 
-        @on_typed_message(self, filters.command([START, HELP]))
+        @on_typed_message(self, filters.command([START, HELP, 'h']))
         async def send_help_message(_, message: Message):
             await message.reply_text(ALL_COMMANDS, parse_mode=ParseMode.HTML)

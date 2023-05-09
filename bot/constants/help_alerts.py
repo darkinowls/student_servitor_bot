@@ -13,33 +13,31 @@ ADD_HELP = HELP_TITLE + "Reply the queue and enter your name with index or not"
 
 ALL_COMMANDS = \
     """
-Commands:
+Команди:
     
-/queue - Creates a queue
+/queue або /q - Створює чергу
 
-/gmail [gmail] [app-pass] - Creates gmail connection between the group and the gmail                           
+/gmail [gmail] [app-pass] - Створює з’єднання між цим чатом та gmail                       
 
-/gmail - Sends the gmail address a user has set
+/gmail - Надсилає адресу gmail, яку встановив користувач
 
-/schedule [file.json] - Takes a file.json and it sets the schedule for the group
+/schedule [file.json] - Бере файл формату json і встановлює розклад для групи
 
-/schedule - Returns the json file a user has set. If he hasn't the example json is sent            
+/schedule - Повертає файл json, встановлений користувачем. Якщо його немає, надсилається приклад json          
 
-/hi - Replies hello
+/hi - Відповідає привіт
 
-/json - Sends the message json file
+/week - Повідомляє номер поточного тижня
 
-/week - Reports the current week number
-
-/help - Sends the message with commands
+/help - Надсилає повідомлення з усіма командами
     """
 
 # LABELS
 
-HOW_TO_ADD = "How to add"
+HOW_TO_ADD = "Як додавати запис?"
 
-HOW_TO_SET_HEADER = "How to set header"
+HOW_TO_SET_HEADER = "Як встановити заголовок?"
 
-HOW_TO_REMOVE = "How to remove"
+HOW_TO_REMOVE = "Як видаляти запис?"
 
-HOW_TO_SWAP = "How to swap"
+HOW_TO_SWAP = "Як переміщувати запиcи?"

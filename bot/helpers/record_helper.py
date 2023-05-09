@@ -9,7 +9,7 @@ def create_record(text: str) -> tuple[int | None, str]:
     check_param_size(text)
     match = re.search('^' + RECORD_REGEX + '$', text)
     if not match:
-        raise TelegramBotError("Enter index and name to create a record in the queue. At least name")
+        raise TelegramBotError("Введіть індекс та назву, аби створити запис у черзі. Принаймні назву")
 
     record_index: int | None = __parse_record_index(match.group(1))
 
@@ -32,7 +32,7 @@ def parse_str_list_to_int_list(parameters: list[str]) -> list[int]:
             index_list.append(index)
         return index_list
     except ValueError:
-        raise TelegramBotError("Enter integers")
+        raise TelegramBotError("Введіть числа")
 
 
 def parse_index_ranges(parameters: list[str]) -> list[str]:
@@ -41,9 +41,9 @@ def parse_index_ranges(parameters: list[str]) -> list[str]:
         next_int: int = __parse_record_index(parameters[two_dots_index + 1])
         prev_int: int = __parse_record_index(parameters[two_dots_index - 1])
         if prev_int >= next_int:
-            raise TelegramBotError("The first number should be less than the second in .. expression")
+            raise TelegramBotError("Перше число має бути менше ніж друге у .. виразі")
     except (ValueError, IndexError):
-        raise TelegramBotError("Enter two integers between .. expression")
+        raise TelegramBotError("Введіть два числа у .. виразі")
 
     sliced_prev_list, sliced_next_list = parameters[:two_dots_index - 1], parameters[two_dots_index + 1:]
     casted_list: list[str] = [str(i) for i in range(prev_int, next_int)]
@@ -58,11 +58,11 @@ def get_two_unique_indexes_from_parameters(text: str) -> tuple[int, int]:
     parameters: list[str] = get_parameters_list(text)
     index_list: list[int] = parse_str_list_to_int_list(parameters)
     if len(index_list) != 2:
-        raise TelegramBotError("Type 2 indexes")
+        raise TelegramBotError("Введіть два індекса")
     first = index_list[0]
     second = index_list[1]
     if first == second:
-        raise TelegramBotError("The same indexes")
+        raise TelegramBotError("Одинакові індекси")
     return first, second
 
 
@@ -71,5 +71,5 @@ def __parse_record_index(record_index_str: str | None) -> int | None:
         return None
     record_index = int(record_index_str)
     if record_index and record_index >= 1000:
-        raise TelegramBotError("To big index. It should be less 1000")
+        raise TelegramBotError("Надто великий індекс. Має бути менше 1000")
     return record_index

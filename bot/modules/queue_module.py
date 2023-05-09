@@ -64,7 +64,7 @@ class QueueModule(SimpleClient):
             try:
                 await message.pin(both_sides=True)
             except RPCError:
-                raise TelegramBotWarning("Add the right to pin messages for the bot")
+                raise TelegramBotWarning("Додайте боту право прикріплювати повідомлення в чаті")
 
         @self.on_callback_query(filters.regex(r"^" + HELP_TITLE))
         async def show_helpful_alert(_, callback_query: CallbackQuery):
