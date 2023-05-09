@@ -45,11 +45,11 @@ async def check_reply_to_my_queue_message(_, client: SimpleClient, message: Mess
     """
     error_str: str | None = None
     if message.reply_to_message is None:
-        error_str = "Reply a queue"
+        error_str = "Виділіть чергу"
     elif message.reply_to_message.from_user.username != (await client.get_me()).username:
-        error_str = "Reply a BOT queue"
+        error_str = "Виділіть чергу БОТА"
     elif SCROLL_EMOJI not in message.reply_to_message.text:
-        error_str = "The bot message is not a queue"
+        error_str = "Це повідомлення бота не є чергою"
 
     if error_str is not None:
         if raiseable:
@@ -84,7 +84,7 @@ def format_to_text(record_dict: OrderedDict[int, str], header: str) -> str:
 def remove_records_by_indexes(index_list: list[int], record_dict: OrderedDict) -> OrderedDict:
     no_changes: bool = [record_dict.pop(index) for index in index_list if index in record_dict.keys()] == []
     if no_changes is True:
-        raise TelegramBotError("No such indexes")
+        raise TelegramBotError("нема таких індексів")
     return record_dict
 
 
@@ -94,7 +94,7 @@ def swap_records_by_indexes(first: int, second: int, record_dict: OrderedDict) -
 
     # No index in queue
     if not is_first and not is_second:
-        raise TelegramBotError("At least one index have to be in the queue")
+        raise TelegramBotError("Принаймні один індекс має бути в черзі")
 
     # make swap
     if is_first and is_second:

@@ -37,19 +37,19 @@ class BasicModule(SimpleClient):
             """
             await self.send_reply_message(message, (await self.get_me()).first_name + " вітає вас!")
 
-        @on_typed_message(self, filters.reply & filters.command(COPY))
+        @on_message(self, filters.reply & filters.command(COPY))
         async def set_message_text(_, message: Message):
             await self.edit_replied_message(message, text=get_single_text_parameter(message.text))
 
-        @on_typed_message(self, filters.command(COPY))
+        @on_message(self, filters.command(COPY))
         async def copy_message_text(_, message: Message):
             await self.send_reply_message(message, text=get_single_text_parameter(message.text))
 
-        @on_typed_message(self, filters.command([WEEK, W]))
+        @on_message(self, filters.command([WEEK, W]))
         async def print_week_number(_, message: Message):
             await self.send_reply_message(message,
                                           text=f"Сьогодні {get_current_week_number_formatted()} тиждень")
 
-        @on_typed_message(self, filters.command([START, HELP, 'h']))
+        @on_message(self, filters.command([START, HELP, 'h']))
         async def send_help_message(_, message: Message):
             await message.reply_text(ALL_COMMANDS, parse_mode=ParseMode.HTML)

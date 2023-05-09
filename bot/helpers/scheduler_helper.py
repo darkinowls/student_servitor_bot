@@ -2,11 +2,13 @@ from apscheduler.job import Job
 from pyrogram import filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
+from bot.constants.database import SCHEDULE
 from bot.constants.emoji import PLAY_EMOJI, PAUSE_EMOJI
 from bot.constants.general import WHITESPACE, UNDERLINE
+from bot.constants.gmail import GMAIL
 from bot.database.session import Session
 from bot.decorators.on_callback_query import on_callback_query
-from bot.decorators.on_typed_message import on_typed_message
+from bot.decorators.on_message import on_message
 from bot.exceptions.telegram_bot_error import TelegramBotError
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
@@ -32,7 +34,7 @@ def register_connection_switchers(client: ScheduledClient, module_name: str, ses
 
 
 def __register_connection_switcher(client: ScheduledClient, module_name: str, turn_bool: bool, session: Session):
-    @on_typed_message(client, filters.command(get_turn_str(turn_bool) + "_" + module_name))
+    @on_message(client, filters.command(get_turn_str(turn_bool) + "_" + module_name))
     def func(_, message):
         switch_connection(client, message, module_name, turn_bool, session)
 
@@ -43,17 +45,21 @@ async def switch_connection(client: ScheduledClient, message, module_name, turn_
     session.set_session_module_is_on(message.chat.id, module_is_on=turn_bool)
     if turn_bool:
         job.resume()
-        await client.send_reply_message(message, PLAY_EMOJI + WHITESPACE + module_name + " module is on")
+        await client.send_reply_message(message, PLAY_EMOJI + WHITESPACE +
+                                        module_name + " модуль увімкнений")
     else:
         job.pause()
-        await client.send_reply_message(message, PAUSE_EMOJI + WHITESPACE + module_name + " module is off")
+        await client.send_reply_message(message, PAUSE_EMOJI + WHITESPACE +
+                                        module_name + " модуль вимкнений")
 
 
 def create_keyboard_markup(module_name: str, turn_str: str):
     return InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton(turn_str + WHITESPACE + module_name,
+                InlineKeyboardButton(translate_turn_str_into_ukrainian(turn_str)
+                                     + WHITESPACE +
+                                     module_name,
                                      callback_data=module_name + UNDERLINE + turn_str),
             ]
         ]
@@ -70,3 +76,7 @@ def get_turn_str(turn_on: bool) -> str:
 
 def get_turn_bool(turn_str: str) -> bool:
     return True if turn_str == "on" else False
+
+
+def translate_turn_str_into_ukrainian(turn_str: str) -> str:
+    return 'увімкнути' if turn_str == "on" else 'вимкнути'

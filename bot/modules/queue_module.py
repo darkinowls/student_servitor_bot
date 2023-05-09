@@ -9,7 +9,7 @@ from bot.constants.commands import RM, HEADER, QUEUE, Q
 from bot.constants.general import WHITESPACE
 from bot.constants.help_alerts import HELP_TITLE
 from bot.constants.regex import SWAP_REGEX
-from bot.decorators.on_typed_message import on_typed_message
+from bot.decorators.on_message import on_message
 from bot.exceptions.telegram_bot_warning import TelegramBotWarning
 from bot.helpers.parameter_helper import get_single_text_parameter
 from bot.helpers.queue_helper import Message, \
@@ -33,7 +33,7 @@ class QueueModule(SimpleClient):
         reply_to_my_list_message_filter: Filter = filters.create(check_reply_to_my_queue_message)
         self.__help_markup = create_queue_help_markup()
 
-        @on_typed_message(self, filters.command(RM))
+        @on_message(self, filters.command(RM))
         async def remove_by_indexes(_, message: Message):
             await check_reply_to_my_queue_message(_, self, message, raiseable=True)
             index_list: list[int] = get_index_list_from_parameters(message.text)
@@ -41,22 +41,21 @@ class QueueModule(SimpleClient):
             record_dict: OrderedDict = remove_records_by_indexes(index_list, record_dict)
             await self.__edit_student_queue(record_dict, header, incoming_message=message)
 
-        # @on_typed_message(self, filters.command(SWAP))
-        @on_typed_message(self, reply_to_my_list_message_filter and filters.regex(SWAP_REGEX))
+        @on_message(self, reply_to_my_list_message_filter and filters.command('swap'))
         async def swap_by_index(_, message: Message):
             first, second = get_two_unique_indexes_from_parameters(message.text)
             record_dict, header = get_order_record_dict_and_header_from_queue(message.reply_to_message.text)
             record_dict: OrderedDict = swap_records_by_indexes(first, second, record_dict)
             await self.__edit_student_queue(record_dict, header, incoming_message=message)
 
-        @on_typed_message(self, filters.command(HEADER))
+        @on_message(self, filters.command(HEADER))
         async def set_header(_, message: Message):
             await check_reply_to_my_queue_message(_, self, message, raiseable=True)
             new_header: str = SCROLL_EMOJI + WHITESPACE + get_single_text_parameter(message.text)
             record_dict, _ = get_order_record_dict_and_header_from_queue(message.reply_to_message.text)
             await self.__edit_student_queue(record_dict, header=new_header, incoming_message=message)
 
-        @on_typed_message(self, filters.command([QUEUE, Q]))
+        @on_message(self, filters.command([QUEUE, Q]))
         async def create_queue(_, message: Message):
             header: str = get_single_text_parameter(message.text, should_exist=False)
             header = SCROLL_EMOJI + WHITESPACE + header
@@ -71,7 +70,7 @@ class QueueModule(SimpleClient):
             helpful_message: str = callback_query.data[len(HELP_TITLE):]
             await callback_query.answer(helpful_message, show_alert=True)
 
-        @on_typed_message(self, reply_to_my_list_message_filter)
+        @on_message(self, reply_to_my_list_message_filter)
         async def add_to_queue(_, message: Message):
             record_index, record_value = create_record(message.text)
             record_dict, header = get_order_record_dict_and_header_from_queue(message.reply_to_message.text)

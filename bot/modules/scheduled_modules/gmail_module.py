@@ -8,7 +8,8 @@ from bot.constants.emoji import ENVELOPE_EMOJI
 from bot.constants.general import WHITESPACE
 from bot.constants.gmail import GMAIL, INTERVAL_SECS_GMAIL
 from bot.database.gmail_session import GmailSession
-from bot.decorators.on_typed_message import on_typed_message
+from bot.decorators.on_message import on_message
+
 from bot.email.gmail_client import GmailClient
 from bot.exceptions.telegram_bot_error import TelegramBotError
 from bot.helpers.gmail_helper import get_gmail_address_and_app_password_from_parameters
@@ -53,7 +54,7 @@ class GmailModule(ScheduledClient):
         self.__add_previous_sessions_to_scheduler(self.__gmail_sessions)
         register_connection_switchers(self, GMAIL, self.__gmail_sessions)
 
-        @on_typed_message(self, filters.regex("^/" + GMAIL + r"\s.*"))
+        @on_message(self, filters.regex("^/" + GMAIL + r"\s.*"))
         async def set_gmail_connection(_, message: Message):
             gmail_address, app_password = get_gmail_address_and_app_password_from_parameters(message.text)
             gmail_client: GmailClient = GmailClient(gmail_address, app_password)
@@ -64,7 +65,7 @@ class GmailModule(ScheduledClient):
                                                   "Gmail з'єднання встановлено успішно! Можете видалити це повідомлення",
                                                   create_keyboard_markup(GMAIL, "off"))
 
-        @on_typed_message(self, filters.command(GMAIL))
+        @on_message(self, filters.command(GMAIL))
         async def send_my_gmail(_, message: Message):
             gmail_address_str, module_is_on = self.__gmail_sessions.get_session_and_module_is_on_by_chat_id(
                 message.chat.id)

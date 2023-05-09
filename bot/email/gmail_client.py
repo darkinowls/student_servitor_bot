@@ -30,5 +30,5 @@ class GmailClient:
         try:
             return Imbox(IMAP_GMAIL_SERVER, username=self.__email_address, password=self.__password)
         except imaplib.IMAP4.error:
-            raise TelegramBotError('The authentication has been failed.\n'
-                                   'Please check the gmail module documentation')
+            raise TelegramBotError('Аутентифікація провалилася.\n'
+                                   'Будь-ласка перегляньте документацію')

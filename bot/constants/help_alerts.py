@@ -1,15 +1,15 @@
 HELP_TITLE = "H"
 
 SWAP_HELP = HELP_TITLE + "/swap 1 2\n" \
-                         "Swaps the replied queue records by indexes"
+                         "Обмінює записи по індексам"
 
 RM_HELP = HELP_TITLE + "/rm 1 2 .. 5\n" \
-                       "Deletes the replied queue records by indexes"
+                       "Видаляє записи по індексам"
 
 HEADER_HELP = HELP_TITLE + "/header Lab 5 Math\n" \
-                           "Sets the replied queue header"
+                           "Встановлює заголовок"
 
-ADD_HELP = HELP_TITLE + "Reply the queue and enter your name with index or not"
+ADD_HELP = HELP_TITLE + "Виділіть чергу та пишіть"
 
 ALL_COMMANDS = \
     """

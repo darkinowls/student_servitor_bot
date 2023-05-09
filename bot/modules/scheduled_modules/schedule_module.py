@@ -13,7 +13,7 @@ from bot.database.lesson.lesson_parser import parse_lessons_from_schedule_json
 from bot.database.lesson.lesson_retriever import retrieve_lessons_from_schedule_json
 from bot.database.schedule_session import ScheduleSession
 from bot.database.lesson.lesson import Lesson
-from bot.decorators.on_typed_message import on_typed_message
+from bot.decorators.on_message import on_message
 from bot.exceptions.telegram_bot_error import TelegramBotError
 from bot.helpers.datetime_helper import get_current_week_number, get_current_time_str, \
     get_current_day_str
@@ -61,7 +61,7 @@ class ScheduleModule(ScheduledClient):
         self.__add_previous_sessions_to_scheduler(self.__schedule_sessions)
         register_connection_switchers(self, SCHEDULE, self.__schedule_sessions)
 
-        @on_typed_message(self, filters.command(SCHEDULE) & filters.document)
+        @on_message(self, filters.command(SCHEDULE) & filters.document)
         async def set_schedule(_, message: Message):
             check_document_is_json(message.document)
             filepath: str = await self.download_media(message,
@@ -75,15 +75,14 @@ class ScheduleModule(ScheduledClient):
             await self.send_success_reply_message(message, "Модуль розкладів успішно встановлено!",
                                                   create_keyboard_markup(SCHEDULE, "викл"))
 
-        @on_typed_message(self, filters.command(SCHEDULE))
+        @on_message(self, filters.command(SCHEDULE))
         async def send_schedule_file(_, message: Message):
-            # TODO: "schedule" field
             schedule, module_is_on = self.__schedule_sessions.get_session_and_module_is_on_by_chat_id(message.chat.id)
             if schedule is None:
                 await self.send_reply_document(message, "schedule.example.json")
                 raise TelegramBotError("Ви ще не встановили розклад. Зверху приклад файлу.\n"
                                        "Аби встановити розклад викаристайте настпну команду і json файл:\n"
                                        "/schedule [schedule.json]")
-            filepath: str = create_tmp_json_file("my_schedule", message.chat.id, json.dumps(schedule))
+            filepath: str = create_tmp_json_file("my_schedule", message.chat.id, json.dumps({"schedule": schedule}))
             await self.send_reply_document(message, filepath,
                                            create_keyboard_markup(SCHEDULE, get_turn_str(not module_is_on)))

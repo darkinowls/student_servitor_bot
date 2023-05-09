@@ -5,6 +5,8 @@ from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 class GarbageModule(ScheduledClient):
 
+    # TODO: remove the module
+
     def __init__(self, api_id, api_hash, bot_token):
         super().__init__(api_id, api_hash, bot_token)
         self.add_job_to_scheduler(0,
