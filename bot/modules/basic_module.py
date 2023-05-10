@@ -8,7 +8,7 @@ from bot.constants.commands import JSON, HI, COPY, WEEK, W, START, HELP
 from bot.constants.help_alerts import ALL_COMMANDS
 from bot.decorators.on_message import on_message
 from bot.decorators.on_typed_message import on_typed_message
-from bot.helpers.json_helper import create_tmp_json_file
+from bot.helpers.json_helper import create_tmp_json_file, delete_tmp_files
 from bot.helpers.parameter_helper import get_single_text_parameter
 from bot.helpers.datetime_helper import get_current_week_number_formatted
 from bot.modules.simple_client import SimpleClient
@@ -27,8 +27,8 @@ class BasicModule(SimpleClient):
             filepath: str = create_tmp_json_file(filename="message",
                                                  chat_id=message.chat.id,
                                                  json_str=message.__str__())
-
             await self.send_document(chat_id=message.chat.id, document=filepath)
+            delete_tmp_files(filepath)
 
         @on_message(self, filters.command(HI))
         async def say_hello(_, message: Message):

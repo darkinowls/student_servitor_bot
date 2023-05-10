@@ -27,21 +27,11 @@ def create_tmp_json_filepath(filename, chat_id) -> str:
 def __create_json_file(filepath: str, json_str: str) -> None:
     json_dict: dict = json.loads(json_str)
     with open(filepath, mode="w", encoding=ENCODING) as json_file:
-        json.dump(json_dict, json_file, ensure_ascii=False)
+        json.dump(json_dict, json_file, ensure_ascii=False, indent=4)
 
 
-def delete_old_tmp_files(*args: int):
-    """
-    Deletes files in .tmp folder that is older than *args minutes.
-    The function is used by file_garbage_collector.
-    :param args: number of minutes
-    """
-    minutes: int = args[0]
-    now_seconds = time.time()
-    for filepath in os.listdir(TMP_FOLDER):
-        file_seconds = os.path.getmtime(filepath)
-        if (now_seconds - file_seconds) / (60 * minutes) > 1:
-            os.remove(filepath)
+def delete_tmp_files(filepath: str):
+    os.remove(filepath)
 
 
 def check_document_is_json(document: Document) -> bool:
@@ -65,6 +55,6 @@ def load_schedule_json_from_file(filepath: str) -> list[dict]:
 
 def get_from_json(key: str, json_dict: dict):
     try:
-        return json_dict.get(key)
+        return json_dict[key]
     except KeyError:
-        raise TelegramBotError("Немає такого поля як " + key)
+        raise TelegramBotError('Відсутнє необхідне поле "' + key + '"')

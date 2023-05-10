@@ -18,7 +18,7 @@ def add_record_to_record_dict(record_dict: OrderedDict, record_index: int | None
 
     # if queue is empty then insert as the first one
     if len(record_dict) == 0 and record_index is None:
-        return OrderedDict({0: record_value})
+        return OrderedDict({1: record_value})
 
     # if no index then add as the last one
     if record_index is None:
@@ -63,7 +63,8 @@ async def check_reply_to_my_queue_message(_, client: SimpleClient, message: Mess
 def get_order_record_dict_and_header_from_queue(reply_to_message_text: str) -> tuple[OrderedDict[int, str], str]:
     record_dict = OrderedDict()
     for record in re.finditer(END_LINE_BEHIND_REGEX + RECORD_REGEX + END_AHEAD_REGEX, reply_to_message_text):
-        record_index, record_value = record.groups()
+        record_index: str = record.group(1)
+        record_value: str = record.group(4)
         record_dict[int(record_index)] = record_value
     return record_dict, reply_to_message_text.split(END_LINE, 1)[0]
 

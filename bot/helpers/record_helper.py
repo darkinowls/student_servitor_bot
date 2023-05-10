@@ -9,11 +9,11 @@ def create_record(text: str) -> tuple[int | None, str]:
     check_param_size(text)
     match = re.search('^' + RECORD_REGEX + '$', text)
     if not match:
-        raise TelegramBotError("Введіть індекс та назву, аби створити запис у черзі. Принаймні назву")
+        raise TelegramBotError("Введіть додатній індекс та назву, аби створити запис у черзі. Принаймні назву")
 
     record_index: int | None = __parse_record_index(match.group(1))
 
-    record_value: str = match.group(2)
+    record_value: str = match.group(4)
     return record_index, record_value
 
 

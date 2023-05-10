@@ -29,7 +29,8 @@ def __parse_lesson(raw_lesson: RawLesson) -> Lesson:
 
 def __parse_name(name: str) -> str:
     if len(name) > 100:
-        raise TelegramBotError("Name in json has more than 100 characters")
+        raise TelegramBotError('Некоректне значення ' + name[0:10] + '...' +
+                               'Значення поля "name" надто довге')
     return name
 
 
@@ -38,30 +39,39 @@ def __parse_link(link: str | None) -> str | None:
         return None
     match = re.match(LINK_REGEX, link)
     if match is None:
-        raise TelegramBotError("Link in json is incorrect")
+        raise TelegramBotError(
+            'Некоректне значення ' +
+            'Значення поля "link" може містити тільки коректне посилання')
     return link
 
 
 def __parse_day(day: str) -> str:
     if day not in DAYS:
-        raise TelegramBotError("Day in json is incorrect. No such a day")
+        raise TelegramBotError('Некоректне значення ' + day +
+                               '\nЗначення поля "day" має містити день тижня'
+                               '\nНаприклад, "Понеділок"')
     return day
 
 
 def __parse_week(week: str | None) -> int | None:
     if week is None:
         return None
+    error_text: str = 'Некоректне значення ' + str(week) + \
+                      'Значення поля "week" може містити тільки число 1 або 2'
     try:
         num = int(week)
     except ValueError:
-        raise TelegramBotError("Week in json should be int")
+        raise TelegramBotError(error_text)
     if num not in WEEKS:
-        raise TelegramBotError("Week in json should be either 1 or 2")
+        raise TelegramBotError(error_text)
     return num
 
 
 def __parse_time(time: str) -> str:
     match = re.match(TIME_REGEX, time)
     if match is None:
-        raise TelegramBotError("Time in json is in incorrect format")
+        raise TelegramBotError(
+            'Некоректне значення ' + time +
+            '\nЗначення поля "time" має бути тільки часом'
+            '\nПриклад - "12:30"')
     return time

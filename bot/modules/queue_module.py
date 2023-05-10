@@ -8,7 +8,6 @@ from pyrogram.types import CallbackQuery
 from bot.constants.commands import RM, HEADER, QUEUE, Q
 from bot.constants.general import WHITESPACE
 from bot.constants.help_alerts import HELP_TITLE
-from bot.constants.regex import SWAP_REGEX
 from bot.decorators.on_message import on_message
 from bot.exceptions.telegram_bot_warning import TelegramBotWarning
 from bot.helpers.parameter_helper import get_single_text_parameter

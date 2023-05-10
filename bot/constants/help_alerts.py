@@ -6,7 +6,7 @@ SWAP_HELP = HELP_TITLE + "/swap 1 2\n" \
 RM_HELP = HELP_TITLE + "/rm 1 2 .. 5\n" \
                        "Видаляє записи по індексам"
 
-HEADER_HELP = HELP_TITLE + "/header Lab 5 Math\n" \
+HEADER_HELP = HELP_TITLE + "/header 2га лаба\n" \
                            "Встановлює заголовок"
 
 ADD_HELP = HELP_TITLE + "Виділіть чергу та пишіть"

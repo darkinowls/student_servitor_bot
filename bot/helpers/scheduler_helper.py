@@ -15,11 +15,11 @@ from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 def check_job_state(job: Job, module_name: str, must_job_run: bool):
     if job is None:
-        raise TelegramBotError(module_name + " модуль не встановлений у цьому чаті")
+        raise TelegramBotError("модуль" + WHITESPACE + translate_module_name_into_ukrainian(module_name) + WHITESPACE + "не встановлений у цьому чаті")
     if job.next_run_time and not must_job_run:
-        raise TelegramBotError(module_name + " модуль вже увімкнений")
+        raise TelegramBotError("модуль" + WHITESPACE + translate_module_name_into_ukrainian(module_name) + WHITESPACE + "вже увімкнений")
     if job.next_run_time is None and must_job_run:
-        raise TelegramBotError(module_name + " модуль уже вимкнений")
+        raise TelegramBotError("модуль" + WHITESPACE + translate_module_name_into_ukrainian(module_name) + WHITESPACE + "уже вимкнений")
 
 
 def register_connection_switchers(client: ScheduledClient, module_name: str, session: Session):
@@ -46,11 +46,15 @@ async def switch_connection(client: ScheduledClient, message, module_name, turn_
     if turn_bool:
         job.resume()
         await client.send_reply_message(message, PLAY_EMOJI + WHITESPACE +
-                                        module_name + " модуль увімкнений")
+                                        "модуль" + WHITESPACE +
+                                        translate_module_name_into_ukrainian(module_name)
+                                        + WHITESPACE + "увімкнений")
     else:
         job.pause()
         await client.send_reply_message(message, PAUSE_EMOJI + WHITESPACE +
-                                        module_name + " модуль вимкнений")
+                                        "модуль" + WHITESPACE +
+                                        translate_module_name_into_ukrainian(module_name)
+                                        + " вимкнений")
 
 
 def create_keyboard_markup(module_name: str, turn_str: str):
@@ -58,8 +62,8 @@ def create_keyboard_markup(module_name: str, turn_str: str):
         [
             [
                 InlineKeyboardButton(translate_turn_str_into_ukrainian(turn_str)
-                                     + WHITESPACE +
-                                     module_name,
+                                     + WHITESPACE + "модуль" + WHITESPACE +
+                                     translate_module_name_into_ukrainian(module_name),
                                      callback_data=module_name + UNDERLINE + turn_str),
             ]
         ]
@@ -80,3 +84,7 @@ def get_turn_bool(turn_str: str) -> bool:
 
 def translate_turn_str_into_ukrainian(turn_str: str) -> str:
     return 'увімкнути' if turn_str == "on" else 'вимкнути'
+
+
+def translate_module_name_into_ukrainian(module_name: str) -> str:
+    return "розкладів" if module_name == SCHEDULE else module_name

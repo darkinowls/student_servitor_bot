@@ -38,5 +38,5 @@ class Lesson:
 
     def get_link(self) -> str:
         if self.__link is None:
-            return "The event has begun"
+            return "Подія розпочалась"
         return self.__link

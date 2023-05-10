@@ -18,7 +18,7 @@ from bot.exceptions.telegram_bot_error import TelegramBotError
 from bot.helpers.datetime_helper import get_current_week_number, get_current_time_str, \
     get_current_day_str
 from bot.helpers.json_helper import check_document_is_json, load_schedule_json_from_file, create_tmp_json_filepath, \
-    create_tmp_json_file
+    create_tmp_json_file, delete_tmp_files
 from bot.helpers.scheduler_helper import register_connection_switchers, create_keyboard_markup, get_turn_str
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
@@ -67,6 +67,7 @@ class ScheduleModule(ScheduledClient):
             filepath: str = await self.download_media(message,
                                                       file_name=create_tmp_json_filepath(SCHEDULE, message.chat.id))
             schedule: list[dict] = load_schedule_json_from_file(filepath)
+            delete_tmp_files(filepath)
             lessons: list[Lesson] = parse_lessons_from_schedule_json(schedule)  # it checks and gets lessons
             self.__schedule_sessions.upsert_session(chat_id=message.chat.id, schedule=schedule)
             self.add_job_to_scheduler(message.chat.id, INTERVAL_SECS_SCHEDULE,
@@ -81,8 +82,10 @@ class ScheduleModule(ScheduledClient):
             if schedule is None:
                 await self.send_reply_document(message, "schedule.example.json")
                 raise TelegramBotError("Ви ще не встановили розклад. Зверху приклад файлу.\n"
-                                       "Аби встановити розклад викаристайте настпну команду і json файл:\n"
+                                       "Аби встановити розклад використайте наступну команду і JSON файл:\n"
                                        "/schedule [schedule.json]")
-            filepath: str = create_tmp_json_file("my_schedule", message.chat.id, json.dumps({"schedule": schedule}))
+            filepath: str = create_tmp_json_file("my_schedule", message.chat.id,
+                                                 json.dumps({SCHEDULE: schedule}))
             await self.send_reply_document(message, filepath,
                                            create_keyboard_markup(SCHEDULE, get_turn_str(not module_is_on)))
+            delete_tmp_files(filepath)

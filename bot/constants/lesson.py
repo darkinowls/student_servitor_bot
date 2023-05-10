@@ -1,4 +1,4 @@
-DAYS: list[str] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+DAYS: list[str] = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота', 'Неділя']
 WEEKS: list[int] = [1, 2]
 
 LINK = 'link'

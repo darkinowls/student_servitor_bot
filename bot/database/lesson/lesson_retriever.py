@@ -15,9 +15,9 @@ def retrieve_lessons_from_schedule_json(schedule: list[dict]) -> list[Lesson]:
 
 
 def __retrieve_lesson(lesson_json: dict) -> Lesson:
-    name: str = get_from_json(NAME, lesson_json)
-    day: str = get_from_json(DAY, lesson_json)
-    time: str = get_from_json(TIME, lesson_json)
-    week: int = get_from_json(WEEK, lesson_json)
-    link: str = get_from_json(LINK, lesson_json)
+    name: str = lesson_json.get(NAME)
+    day: str = lesson_json.get(DAY)
+    time: str = lesson_json.get(TIME)
+    week: int | None = lesson_json.get(WEEK)
+    link: str | None = lesson_json.get(LINK)
     return Lesson(name, day, time, week, link)

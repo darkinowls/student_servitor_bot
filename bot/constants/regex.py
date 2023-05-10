@@ -2,7 +2,7 @@ import re
 
 GMAIL_REGEX = r"^[a-z0-9](\.?[a-z0-9]){5,}@gmail\.com$"
 
-RECORD_REGEX = r'(\d{1,})?\.?\s*([a-zA-ZА-ЯҐЄІЇа-яґєії]{1,20}.*)'
+RECORD_REGEX = r'(([1-9])|(\d{2,}))?\.?\s*([a-zA-ZА-ЯҐЄІЇа-яґєії]{1,20}.*)'
 
 END_LINE_BEHIND_REGEX = r'(?<=\n)'
 END_AHEAD_REGEX = r'(?=\n|$)'
