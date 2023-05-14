@@ -1,7 +1,7 @@
 from collections.abc import Callable
 
 from pyrogram import Client
-from pyrogram.types import Message, InlineKeyboardMarkup
+from pyrogram.types import Message, InlineKeyboardMarkup, ReplyKeyboardMarkup
 
 from bot.exceptions.telegram_bot_exception import TelegramBotException
 
@@ -13,7 +13,7 @@ class SimpleClient(Client):
 
     @staticmethod
     async def send_reply_message(incoming_message: Message, text: str,
-                                 reply_markup: InlineKeyboardMarkup = None) -> Message:
+                                 reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup = None) -> Message:
         return await incoming_message.reply_text(text=text, quote=True, reply_markup=reply_markup)
 
     @staticmethod

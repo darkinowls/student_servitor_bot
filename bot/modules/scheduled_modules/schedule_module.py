@@ -1,30 +1,35 @@
 import json
 
+import numpy as np
 from apscheduler.job import Job
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from pyrogram import filters
-from pyrogram.types import Message
+from pyrogram.types import Message, ReplyKeyboardMarkup
 
 from bot.constants.database import CHAT_ID, SCHEDULE, MODULE_IS_ON
 from bot.constants.emoji import CLOCK_EMOJI
 from bot.constants.general import END_LINE, WHITESPACE
+from bot.constants.regex import GROUP_REGEX
 from bot.constants.schedule import INTERVAL_SECS_SCHEDULE
+from bot.database.lesson.lesson import Lesson
 from bot.database.lesson.lesson_parser import parse_lessons_from_schedule_json
 from bot.database.lesson.lesson_retriever import retrieve_lessons_from_schedule_json
 from bot.database.schedule_session import ScheduleSession
-from bot.database.lesson.lesson import Lesson
 from bot.decorators.on_message import on_message
 from bot.exceptions.telegram_bot_error import TelegramBotError
 from bot.helpers.datetime_helper import get_current_week_number, get_current_time_str, \
     get_current_day_str
 from bot.helpers.json_helper import check_document_is_json, load_schedule_json_from_file, create_tmp_json_filepath, \
     create_tmp_json_file, delete_tmp_files
-from bot.helpers.scheduler_helper import register_connection_switchers, create_keyboard_markup, get_turn_str
+from bot.helpers.scheduler_helper import register_connection_switchers, create_keyboard_markup, get_turn_str, \
+    make_keyboard_list
+from bot.kpi_schedule.kpi_api import KpiRepo
+from bot.kpi_schedule.models.group import Group
 from bot.modules.scheduled_modules.scheduled_client import ScheduledClient
 
 
 class ScheduleModule(ScheduledClient):
-    scheduler: AsyncIOScheduler
+    scheduler: BackgroundScheduler
 
     def __send_on_schedule(self, *args: int | list[Lesson]):
         lessons: list[Lesson] = args[0]
@@ -40,10 +45,8 @@ class ScheduleModule(ScheduledClient):
             if do_this_week and do_this_day and do_this_time:
                 message = self.send_message(chat_id=chat_id,
                                             text=CLOCK_EMOJI + WHITESPACE + lesson.get_name() + END_LINE + lesson.get_link())
-                # Delete job and
-                print(message)
 
-    def __add_previous_sessions_to_scheduler(self, schedule_session: ScheduleSession) -> AsyncIOScheduler:
+    def __add_previous_sessions_to_scheduler(self, schedule_session: ScheduleSession) -> BackgroundScheduler:
         for session in schedule_session.get_all_sessions():
             chat_id = int(session.get(CHAT_ID))
             module_is_on = bool(session.get(MODULE_IS_ON))
@@ -89,3 +92,37 @@ class ScheduleModule(ScheduledClient):
             await self.send_reply_document(message, filepath,
                                            create_keyboard_markup(SCHEDULE, get_turn_str(not module_is_on)))
             delete_tmp_files(filepath)
+
+        @on_message(self, filters.command("kpi_schedule"))
+        async def get_kpi_schedule(_, message: Message):
+            groups: list[Group] = KpiRepo().getGroups()
+            texts = [group.name for group in groups]
+            unique_faculties_list = make_keyboard_list(texts)
+            await self.send_reply_message(
+                message, (await self.get_me()).first_name + " вітає вас!",
+                reply_markup=ReplyKeyboardMarkup(
+                    keyboard=unique_faculties_list,
+                    resize_keyboard=True,
+                    one_time_keyboard=True
+                )
+
+            )
+
+        @on_message(self, filters.regex(GROUP_REGEX))
+        async def set_kpi_schedule(_, message: Message):
+            id: str = KpiRepo().getIdByGroupName(message.text)
+            schedule: list[dict] = KpiRepo().getScheduleById(id)
+            filepath = create_tmp_json_file(SCHEDULE, message.chat.id,
+                                            json.dumps({SCHEDULE: schedule}))
+            await message.reply_document(
+                document=filepath
+            )
+            delete_tmp_files(filepath)
+            self.__schedule_sessions.upsert_session(chat_id=message.chat.id,
+                                                    schedule=schedule)
+            lessons: list[Lesson] = parse_lessons_from_schedule_json(schedule)
+            self.add_job_to_scheduler(message.chat.id, INTERVAL_SECS_SCHEDULE,
+                                      self.__send_on_schedule,
+                                      SCHEDULE, lessons)
+            await self.send_success_reply_message(message, "Модуль розкладів успішно встановлено!",
+                                                  create_keyboard_markup(SCHEDULE, "викл"))

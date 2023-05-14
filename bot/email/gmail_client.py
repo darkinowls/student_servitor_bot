@@ -17,6 +17,7 @@ class GmailClient:
         self.__create_imbox()
 
     def get_new_messages(self) -> list[str]:
+
         texts: list[str] = []
         imbox = self.__create_imbox()
         raw_messages: list = imbox.messages(unread=True)
@@ -26,9 +27,12 @@ class GmailClient:
             imbox.mark_seen(uid)
         return texts
 
-    def __create_imbox(self):
+    def __create_imbox(self) -> Imbox:
         try:
-            return Imbox(IMAP_GMAIL_SERVER, username=self.__email_address, password=self.__password)
+            imbox = Imbox(IMAP_GMAIL_SERVER, username=self.__email_address, password=self.__password)
+            return imbox
         except imaplib.IMAP4.error:
             raise TelegramBotError('Аутентифікація провалилася.\n'
-                                   'Будь-ласка перегляньте документацію')
+                                   "1. Як отримати app-pass: https://support.google.com/mail/answer/185833?hl=ru\n"
+                                   "2. Як увімкнути IMAP: https://support.google.com/mail/answer/7126229?hl=ru"
+                                   )

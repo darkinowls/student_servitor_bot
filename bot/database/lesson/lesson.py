@@ -3,27 +3,27 @@ class Lesson:
     lesson model
     """
 
-    __name: str
-    __day: str
-    __time: str
-    __week: int | None
-    __link: str | None
+    name: str
+    day: str
+    time: str
+    week: int | None
+    link: str | None
 
     def __init__(self, name: str, day: str, time: str, week: int | None, link: str | None):
-        self.__name = name
-        self.__day = day
-        self.__time = time
-        self.__week = week
-        self.__link = link
+        self.name = name
+        self.day = day
+        self.time = time
+        self.week = week
+        self.link = link
 
     def get_name(self) -> str:
-        return self.__name
+        return self.name
 
     def get_day(self) -> str:
-        return self.__day
+        return self.day
 
     def get_time(self) -> str:
-        return self.__time
+        return self.time
 
     def get_week(self) -> int:
         """
@@ -32,11 +32,11 @@ class Lesson:
         2 - even week
         :return:
         """
-        if self.__week is None:
+        if self.week is None:
             return 0
-        return self.__week
+        return self.week
 
     def get_link(self) -> str:
-        if self.__link is None:
+        if self.link is None:
             return "Подія розпочалась"
-        return self.__link
+        return self.link

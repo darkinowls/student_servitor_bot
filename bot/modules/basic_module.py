@@ -2,7 +2,7 @@ import json
 
 from pyrogram import filters
 from pyrogram.enums import ParseMode
-from pyrogram.types import Message
+from pyrogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 
 from bot.constants.commands import JSON, HI, COPY, WEEK, W, START, HELP
 from bot.constants.help_alerts import ALL_COMMANDS
@@ -35,7 +35,9 @@ class BasicModule(SimpleClient):
             """
             Everyone can say hello to Bot!
             """
-            await self.send_reply_message(message, (await self.get_me()).first_name + " вітає вас!")
+            await self.send_reply_message(
+                message, (await self.get_me()).first_name + " вітає вас!"
+            )
 
         @on_message(self, filters.reply & filters.command(COPY))
         async def set_message_text(_, message: Message):

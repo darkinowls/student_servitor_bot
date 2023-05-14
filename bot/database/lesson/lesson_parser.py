@@ -49,7 +49,7 @@ def __parse_day(day: str) -> str:
     if day not in DAYS:
         raise TelegramBotError('Некоректне значення ' + day +
                                '\nЗначення поля "day" має містити день тижня'
-                               '\nНаприклад, "Понеділок"')
+                               '\nНаприклад, "Пн"')
     return day
 
 
@@ -73,5 +73,5 @@ def __parse_time(time: str) -> str:
         raise TelegramBotError(
             'Некоректне значення ' + time +
             '\nЗначення поля "time" має бути тільки часом'
-            '\nПриклад - "12:30"')
+            '\nПриклад - "12.30"')
     return time

@@ -2,46 +2,46 @@
   "schedule": [
     {
       "link": "https://zoom.com/321",
-      "day": "Понеділок",
-      "time": "08:30",
+      "day": "Пн",
+      "time": "08.30",
       "name": "Математика"
     },
     {
-      "day": "Вівторок",
-      "time": "12:30",
+      "day": "Вв",
+      "time": "12.30",
       "week": 1,
       "name": "Dancing"
     },
     {
       "link": "https://zoom.com/123",
-      "day": "Середа",
-      "time": "11:30",
+      "day": "Ср",
+      "time": "11.30",
       "week": 1,
       "name": "Економіка"
     },
     {
       "link": "https://zoom.com/123",
-      "day": "Четвер",
-      "time": "09:30",
+      "day": "Чт",
+      "time": "09.30",
       "week": 2,
       "name": "IT bussiness"
     },
     {
-      "day": "П'ятниця",
-      "time": "10:30",
+      "day": "Пт",
+      "time": "10.30",
       "week": 2,
       "name": "Data mining"
     },
     {
       "link": "https://zoom.com/123",
-      "day": "Субота",
-      "time": "10:00",
+      "day": "Сб",
+      "time": "10.00",
       "name": "Dev ops"
     },
     {
       "link": "https://zoom.com/123",
-      "day": "Неділя",
-      "time": "14:30",
+      "day": "Нд",
+      "time": "14.30",
       "week": 2,
       "name": "Програмування"
     }

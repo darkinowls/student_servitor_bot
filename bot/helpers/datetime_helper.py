@@ -1,5 +1,7 @@
 import datetime
 
+from bot.constants.lesson import DAYS_MAP
+
 
 def get_current_week_number() -> int:
     """
@@ -14,8 +16,8 @@ def get_current_week_number_formatted() -> str:
 
 
 def get_current_time_str() -> str:
-    return datetime.datetime.now().strftime("%H:%M")
+    return datetime.datetime.now().strftime("%H.%M")
 
 
 def get_current_day_str() -> str:
-    return datetime.datetime.now().strftime("%A")
+    return DAYS_MAP[datetime.datetime.now().strftime("%A")]
