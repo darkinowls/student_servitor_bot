@@ -26,6 +26,8 @@ class KpiRepo(metaclass=SingletonMeta):
         cafedra = list(
             group for group in groups if group.faculty == '' and re.match(GROUP_REGEX, group.name))
 
+        cafedra = set(cafedra)
+
         sorted_cafedra = sorted(cafedra, key=lambda x: x.name)
 
         with open('kpi_groups.json', mode="w", encoding='utf-8') as json_file:
@@ -44,11 +46,12 @@ class KpiRepo(metaclass=SingletonMeta):
 
         return groups
 
-    def getIdByGroupName(self, group_name:str) -> str:
+    def getIdByGroupName(self, group_name: str) -> str | None:
         groups = self.getGroups()
         for group in groups:
             if group.name == group_name:
                 return group.id
+        return None
 
     def getScheduleById(self, group_id: str) -> list[dict]:
         response: Response = requests.get(self.__url + '/schedule/lessons?groupId=' + group_id)

@@ -63,6 +63,7 @@ class ScheduleModule(ScheduledClient):
         self.__schedule_sessions: ScheduleSession = ScheduleSession()
         self.__add_previous_sessions_to_scheduler(self.__schedule_sessions)
         register_connection_switchers(self, SCHEDULE, self.__schedule_sessions)
+        KpiRepo().downloadGroups()
 
         @on_message(self, filters.command(SCHEDULE) & filters.document)
         async def set_schedule(_, message: Message):
@@ -99,7 +100,7 @@ class ScheduleModule(ScheduledClient):
             texts = [group.name for group in groups]
             unique_faculties_list = make_keyboard_list(texts)
             await self.send_reply_message(
-                message, (await self.get_me()).first_name + " вітає вас!",
+                message, "Виберіть групу серед наявних",
                 reply_markup=ReplyKeyboardMarkup(
                     keyboard=unique_faculties_list,
                     resize_keyboard=True,
@@ -110,7 +111,9 @@ class ScheduleModule(ScheduledClient):
 
         @on_message(self, filters.regex(GROUP_REGEX))
         async def set_kpi_schedule(_, message: Message):
-            id: str = KpiRepo().getIdByGroupName(message.text)
+            id: str | None = KpiRepo().getIdByGroupName(message.text)
+            if id is None:
+                return
             schedule: list[dict] = KpiRepo().getScheduleById(id)
             filepath = create_tmp_json_file(SCHEDULE, message.chat.id,
                                             json.dumps({SCHEDULE: schedule}))

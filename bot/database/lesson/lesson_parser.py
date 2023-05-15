@@ -30,7 +30,7 @@ def __parse_lesson(raw_lesson: RawLesson) -> Lesson:
 def __parse_name(name: str) -> str:
     if len(name) > 100:
         raise TelegramBotError('Некоректне значення ' + name[0:10] + '...' +
-                               'Значення поля "name" надто довге')
+                               '\nЗначення поля "name" надто довге')
     return name
 
 
@@ -40,8 +40,8 @@ def __parse_link(link: str | None) -> str | None:
     match = re.match(LINK_REGEX, link)
     if match is None:
         raise TelegramBotError(
-            'Некоректне значення ' +
-            'Значення поля "link" може містити тільки коректне посилання')
+            'Некоректне значення ' + link[0:10] + '...' +
+            '\nЗначення поля "link" може містити тільки коректне посилання')
     return link
 
 
@@ -57,7 +57,7 @@ def __parse_week(week: str | None) -> int | None:
     if week is None:
         return None
     error_text: str = 'Некоректне значення ' + str(week) + \
-                      'Значення поля "week" може містити тільки число 1 або 2'
+                      '\nЗначення поля "week" може містити тільки число 1 або 2'
     try:
         num = int(week)
     except ValueError:

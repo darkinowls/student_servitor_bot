@@ -96,7 +96,7 @@ def translate_module_name_into_ukrainian(module_name: str) -> str:
 
 def make_keyboard_list(texts: list[str]) -> list:
     for i in range(3, 0, -1):
-        if (len(texts) % i == 0):
-            unique_faculties_list = np.array(texts).reshape((-1, 3))
+        if len(texts) % i == 0:
+            unique_faculties_list = np.array(texts).reshape((-1, i))
             return unique_faculties_list
     return []
